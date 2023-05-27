@@ -132,6 +132,7 @@
     <ClInclude Include="Driver.h" />
     <ClInclude Include="GlobalConstants.h" />
     <ClInclude Include="MyString.h" />
+    <ClInclude Include="MyVector.hpp" />
     <ClInclude Include="Order.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="User.h" />

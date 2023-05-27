@@ -10,6 +10,12 @@ Driver::Driver(const char* userName, const char* password, const char* firstName
 	User(userName, password, firstName, lastName), carNumber(carNumber), phoneNumber(phoneNumber),
 	currentAddress(currentAddress) {}
 
+Driver::Driver(const char* userName, const char* password, const char* firstName, const char* lastName,
+	const char* carNumber, const char* phoneNumber) : User(userName, password, firstName, lastName),
+	carNumber(carNumber), phoneNumber(phoneNumber), 
+	currentAddress("Default Driver Address", 0, 0, "This is the default driver address")
+{}
+
 const MyString& Driver::getCarNumber() const
 {
 	return this->carNumber;

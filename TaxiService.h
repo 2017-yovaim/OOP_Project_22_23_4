@@ -18,6 +18,11 @@ public:
 	void run();
 	int login(const MyString& userName, const MyString& password);
 	int logout();
+	int registerClient(const MyString& userName, const MyString& password, const MyString& firstName, 
+		const MyString& lastName);
+	int registerDriver(const MyString& userName, const MyString& password, const MyString& firstName,
+		const MyString& lastName, const MyString& carNumber, const MyString& phoneNumber);
+
 
 };
 

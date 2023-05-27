@@ -47,3 +47,19 @@ int TaxiService::logout()
 	this->currentDriverIndex = INVALID_INDEX;
 	return SUCCESS;
 }
+
+int TaxiService::registerClient(const MyString& userName, const MyString& password, const MyString& firstName,
+	const MyString& lastName)
+{
+	Client temp(userName.c_str(), password.c_str(), firstName.c_str(), lastName.c_str());
+	this->clients.push_back(temp);
+	return SUCCESS;
+}
+
+int TaxiService::registerDriver(const MyString& userName, const MyString& password, const MyString& firstName,
+	const MyString& lastName, const MyString& carNumber, const MyString& phoneNumber)
+{
+	Driver temp(userName.c_str(), password.c_str(), firstName.c_str(), lastName.c_str(), carNumber.c_str(), phoneNumber.c_str());
+	this->drivers.push_back(temp);
+	return SUCCESS;
+}

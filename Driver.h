@@ -12,6 +12,8 @@ public:
 	Driver();
 	Driver(const char* userName, const char* password, const char* firstName, const char* lastName,
 		const char* carNumber, const char* phoneNumber, const Address& currentAddress);
+	Driver(const char* userName, const char* password, const char* firstName, const char* lastName,
+		const char* carNumber, const char* phoneNumber);
 	const MyString& getCarNumber() const;
 	const MyString& getPhoneNumber() const;
 	const Address& getCurrentAddress() const;

@@ -1,4 +1,7 @@
 #include "Order.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 
 int orderIDAssign = 1;
 
@@ -62,5 +65,40 @@ bool Order::isAccepted() const
 bool Order::isFinished() const
 {
 	return this->finished;
+}
+
+void Order::setDriverID(unsigned driverID)
+{
+	this->driverID = driverID;
+}
+
+void Order::setClientID(unsigned clientID)
+{
+	this->clientID = clientID;
+}
+
+unsigned Order::getDriverID() const
+{
+	return this->driverID;
+}
+
+unsigned Order::getClientID() const
+{
+	return this->clientID;
+}
+
+//the rest will be done by the system
+void Order::describeOrder() const
+{
+	cout << "Order #" << this->getOrderID() << endl;
+	cout << "Status: ";
+	if (isAccepted())
+	{
+		cout << " accepted." << endl;
+	}
+	else if(isFinished())
+	{
+		cout << " finished." << endl;
+	}
 }
 

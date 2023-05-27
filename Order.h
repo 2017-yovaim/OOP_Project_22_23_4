@@ -20,6 +20,9 @@ private:
 	bool accepted;
 	bool finished;
 
+	unsigned driverID = INVALID_INDEX; //id of driver who accepts the order - managed by the system
+	unsigned clientID = INVALID_INDEX; //id of client who makes the order - managed by the system
+
 public:
 	//accepted and finished are set as false by default for all constructors
 	Order(const Address& from, const Address& to, unsigned passengers);
@@ -38,6 +41,13 @@ public:
 	unsigned int getPassengers() const;
 	bool isAccepted() const;
 	bool isFinished() const;
+
+	void setDriverID(unsigned driverID);
+	void setClientID(unsigned clientID);
+	unsigned getDriverID() const;
+	unsigned getClientID() const;
+
+	void describeOrder() const; //basically what checkOrder displays
 
 	//change status flags & alert system of status changes
 	void accept(); //sets accepted to true

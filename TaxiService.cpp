@@ -1,4 +1,8 @@
 #include "TaxiService.h"
+#include <iostream>
+using std::cout;
+using std::endl;
+using std::cin;
 
 int TaxiService::login(const MyString& userName, const MyString& password)
 {
@@ -62,4 +66,61 @@ int TaxiService::registerDriver(const MyString& userName, const MyString& passwo
 	Driver temp(userName.c_str(), password.c_str(), firstName.c_str(), lastName.c_str(), carNumber.c_str(), phoneNumber.c_str());
 	this->drivers.push_back(temp);
 	return SUCCESS;
+}
+
+int TaxiService::order(const Address& from, const Address& to, unsigned passengers)
+{
+	Order temp(from, to, passengers);
+	temp.setClientID(currentClientIndex);
+	this->orders.push_back(temp);
+	return temp.getOrderID();
+}
+
+void TaxiService::checkOrder(unsigned orderID) const
+{
+	if (orderID >= this->orders.getSize())
+		throw std::invalid_argument("No order with such id");
+
+	this->orders[orderID].describeOrder();
+	if (this->orders[orderID].isAccepted())
+	{
+		this->drivers[this->orders[orderID].getDriverID()].describeDriver();
+	}
+}
+
+int TaxiService::pay(unsigned orderID, double amount)
+{
+	if (orderID >= this->orders.getSize())
+		throw std::invalid_argument("No order with such id");
+
+	if (!this->orders[orderID].isFinished() || !this->orders[orderID].isAccepted())
+		throw std::logic_error("Cannot pay for an order that has not been accepted or finished.");
+
+	return this->clients[this->orders[orderID].getClientID()].pay(orderID, amount);
+}
+
+int TaxiService::acceptPayment(unsigned orderID, double amount)
+{
+	if (orderID >= this->orders.getSize())
+		throw std::invalid_argument("No order with such id");
+
+	if (!this->orders[orderID].isFinished() || !this->orders[orderID].isAccepted())
+		throw std::logic_error("Cannot accept payment for an order that has not been accepted or finished.");
+
+	return this->drivers[this->orders[orderID].getDriverID()].acceptPayment(amount);
+}
+
+int TaxiService::declineOrder(unsigned orderID)
+{
+	this->orders[orderID].decline();
+	return ORDER_DECLINED;
+}
+
+int TaxiService::finishOrder(unsigned orderID)
+{
+	if (orderID >= this->orders.getSize())
+		throw std::invalid_argument("No order with such id");
+
+	this->orders[orderID].finish();
+	this->drivers[currentDriverIndex].changeAddress(this->orders[orderID].getTo());
 }

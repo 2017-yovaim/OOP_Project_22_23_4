@@ -9,3 +9,8 @@ int Client::addMoney(double amount)
 	this->setMoneyAccount(this->getMoneyAmount() + amount);
 }
 
+int Client::pay(int orderID, double amount)
+{
+	this->setMoneyAccount(this->getMoneyAmount() - amount);
+}
+

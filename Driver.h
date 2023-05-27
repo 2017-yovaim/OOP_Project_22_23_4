@@ -20,9 +20,13 @@ public:
 	int changeAddress(const Address& newAddress);
 
 	void checkMessages() const;
+
+	//possibly system functions
 	int acceptOrder(int orderID, int minutes); //const?
 	int declineOrder(int orderID); //const?
 	int finishOrder(int orderID); //definitely not const - changes the current address
 	double acceptPayment(double amount);
+
+	void describeDriver() const;
 };
 

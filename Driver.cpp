@@ -45,3 +45,10 @@ double Driver::acceptPayment(double amount)
 	return SUCCESS;
 }
 
+void Driver::describeDriver() const
+{
+	std::cout << "Driver: " << this->getFirstName().c_str() << " " << this->getLastName().c_str() << std::endl;
+	std::cout << "Car number: " << this->getCarNumber().c_str() << std::endl;
+	std::cout << "Phone number: " << this->getPhoneNumber().c_str() << std::endl;
+}
+

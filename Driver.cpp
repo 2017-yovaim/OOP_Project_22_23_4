@@ -29,3 +29,13 @@ int Driver::changeAddress(const Address& newAddress)
 	this->currentAddress = newAddress;
 }
 
+double Driver::acceptPayment(double amount)
+{
+	if (amount <= 0)
+	{
+		return FAIL_TO_CHANGE_MONEY_AMOUNT;
+	}
+	this->setMoneyAccount(this->getMoneyAmount() + amount);
+	return SUCCESS;
+}
+

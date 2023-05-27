@@ -17,5 +17,7 @@ const unsigned DEFAULT_VECTOR_CAPACITY = 8;
 const int SUCCESS = 0;
 const int INVALID_DATA = 1;
 const int FAIL_TO_CHANGE_MONEY_AMOUNT = 2;
+const int FAIL_TO_LOG_IN = 4;
+const int FAIL_TO_LOG_OUT = 8;
 const int INVALID_INDEX = -1;
 

@@ -29,6 +29,6 @@ public:
 	const MyString& getFirstName() const;
 	const MyString& getLastName() const;
 	double getMoneyAmount() const;
-
+	bool isCorrectPassword(const MyString& password) const; //checks if a password is correct for the user
 };
 

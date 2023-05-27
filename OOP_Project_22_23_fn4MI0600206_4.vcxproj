@@ -135,6 +135,7 @@
     <ClInclude Include="MyVector.hpp" />
     <ClInclude Include="Order.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="TaxiService.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>
   <ItemGroup>
@@ -144,6 +145,7 @@
     <ClCompile Include="MyString.cpp" />
     <ClCompile Include="Order.cpp" />
     <ClCompile Include="Point.cpp" />
+    <ClCompile Include="TaxiService.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

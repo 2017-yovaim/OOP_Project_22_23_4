@@ -20,7 +20,7 @@ public:
 	void checkMessages() const;
 	int acceptOrder(int orderID, int minutes); //const?
 	int declineOrder(int orderID); //const?
-	int finishorder(int orderID); //definitely not const - changes the current address
+	int finishOrder(int orderID); //definitely not const - changes the current address
 	double acceptPayment(double amount);
 };
 

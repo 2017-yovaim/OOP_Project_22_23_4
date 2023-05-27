@@ -42,6 +42,9 @@
     <ClInclude Include="MyVector.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TaxiService.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyString.cpp">
@@ -63,6 +66,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Order.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TaxiService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

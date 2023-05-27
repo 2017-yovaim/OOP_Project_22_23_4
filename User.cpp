@@ -62,3 +62,8 @@ int User::setMoneyAccount(double newAmount)
 	this->moneyAccount = newAmount;
 
 }
+
+bool User::isCorrectPassword(const MyString& password) const
+{
+	return this->password == password;
+}

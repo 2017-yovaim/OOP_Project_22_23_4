@@ -173,3 +173,27 @@ bool operator!=(const MyString& lhs, const MyString& rhs)
 {
 	return strcmp(lhs.c_str(), rhs.c_str()) != 0;
 }
+
+
+std::ofstream& MyString::writeString(std::ofstream& output) const
+{
+	unsigned strLength = this->length();
+	output.write((const char*)&strLength, sizeof(strLength));
+	output.write(this->c_str(), strLength);
+
+	return output;
+}
+
+std::ifstream& MyString::readString(std::ifstream & input)
+{
+	unsigned len = 0;
+	input.read((char*)&len, sizeof(len));
+	char* tempData = new char[len + 1];
+	input.read(tempData, len);
+	tempData[len] = '\0';
+	MyString temp(tempData);
+	delete[] tempData;
+	(*this) = temp;
+
+	return input;
+}

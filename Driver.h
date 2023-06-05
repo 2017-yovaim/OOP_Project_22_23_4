@@ -28,5 +28,8 @@ public:
 	double acceptPayment(double amount);
 
 	void describeDriver() const;
+
+	virtual std::ofstream& writeUser(std::ofstream& output) const override;
+	virtual std::ifstream& readUser(std::ifstream& input) override;
 };
 

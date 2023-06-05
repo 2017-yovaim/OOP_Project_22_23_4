@@ -51,3 +51,23 @@ double getDistance(const Point& lhs, const Point& rhs)
 
 	return sqrt(dy * dy + dx * dx);
 }
+
+//testing needed if writing will work
+std::ofstream& Point::writePoint(std::ofstream& output) const
+{
+	int x = this->getX();
+	int y = this->getY();
+	output.write((const char*)&x, sizeof(x));
+	output.write((const char*)&y, sizeof(y));
+	return output;
+}
+
+std::ifstream& Point::readPoint(std::ifstream& input)
+{
+	int x, y;
+	input.read((char*)&x, sizeof(x));
+	input.read((char*)&y, sizeof(y));
+	this->setX(x);
+	this->setY(y);
+	return input;
+}

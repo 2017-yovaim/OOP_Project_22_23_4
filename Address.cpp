@@ -40,3 +40,21 @@ double getAddressesDistance(const Address& lhs, const Address& rhs)
 {
 	return getDistance(lhs.getCoordinates(), rhs.getCoordinates());
 }
+
+std::ofstream& Address::writeAddress(std::ofstream& output) const
+{
+	this->name.writeString(output);
+	this->coordinates.writePoint(output);
+	this->additionalInfo.writeString(output);
+	
+	return output;
+}
+
+std::ifstream& Address::readAddress(std::ifstream& input)
+{
+	this->name.readString(input);
+	this->coordinates.readPoint(input);
+	this->additionalInfo.readString(input);
+
+	return input;
+}

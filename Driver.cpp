@@ -52,3 +52,23 @@ void Driver::describeDriver() const
 	std::cout << "Phone number: " << this->getPhoneNumber().c_str() << std::endl;
 }
 
+std::ofstream& Driver::writeUser(std::ofstream& output) const
+{
+	User::writeUser(output);
+	this->carNumber.writeString(output);
+	this->phoneNumber.writeString(output);
+	this->currentAddress.writeAddress(output);
+
+	return output;
+}
+
+std::ifstream& Driver::readUser(std::ifstream& input)
+{
+	User::readUser(input);
+	this->carNumber.readString(input);
+	this->phoneNumber.readString(input);
+	this->currentAddress.readAddress(input);
+
+	return input;
+}
+

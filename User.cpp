@@ -67,3 +67,30 @@ bool User::isCorrectPassword(const MyString& password) const
 {
 	return this->password == password;
 }
+
+std::ofstream& User::writeUser(std::ofstream& output) const
+{
+	this->userName.writeString(output);
+	this->password.writeString(output);
+	this->firstName.writeString(output);
+	this->lastName.writeString(output);
+
+	double tempMoney = this->getMoneyAmount();
+	output.write((const char*)&tempMoney, sizeof(tempMoney));
+
+	return output;
+}
+
+std::ifstream& User::readUser(std::ifstream& input)
+{
+	this->userName.readString(input);
+	this->password.readString(input);
+	this->firstName.readString(input);
+	this->lastName.readString(input);
+
+	double tempMoney = 0;
+	input.read((char*)&tempMoney, sizeof(tempMoney));
+	this->setMoneyAccount(tempMoney);
+
+	return input;
+}

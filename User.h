@@ -1,6 +1,7 @@
 #pragma once
 #include "MyString.h"
 #include "GlobalConstants.h"
+#include <fstream>
 
 //TO-DO
 /*
@@ -30,5 +31,11 @@ public:
 	const MyString& getLastName() const;
 	double getMoneyAmount() const;
 	bool isCorrectPassword(const MyString& password) const; //checks if a password is correct for the user
+
+
+	virtual std::ofstream& writeUser(std::ofstream& output) const;
+	virtual std::ifstream& readUser(std::ifstream& input);
+
+	virtual ~User() = default; //is this necessary?
 };
 

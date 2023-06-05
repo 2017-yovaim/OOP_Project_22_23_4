@@ -1,5 +1,6 @@
 #pragma once
 #include "GlobalConstants.h"
+#include <fstream>
 //TO-DO
 /*
 * Maybe data validation? Like, check max and min latitude and longitude
@@ -20,5 +21,7 @@ public:
 	int getY() const;
 
 	friend double getDistance(const Point& lhs, const Point& rhs);
+	std::ofstream& writePoint(std::ofstream& output) const; //writes a point in binary file
+	std::ifstream& readPoint(std::ifstream& input); //reads a point from binary file
 };
 

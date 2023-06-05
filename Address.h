@@ -1,6 +1,7 @@
 #pragma once
 #include "MyString.h"
 #include "Point.h"
+#include <fstream>
 
 //T0-DO
 /*
@@ -26,6 +27,8 @@ public:
 	const MyString& getAdditionalInfo() const;
 
 	friend double getAddressesDistance(const Address& lhs, const Address& rhs);
+	std::ofstream& writeAddress(std::ofstream& output) const;
+	std::ifstream& readAddress(std::ifstream& input);
 
 };
 

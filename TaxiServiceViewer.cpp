@@ -19,7 +19,7 @@ using std::endl;
 void actionHandler(int errorCode)
 {
 	if (errorCode == SUCCESS)
-		cout << "You have successfully signed in!" << endl; //for testing purposes only
+		cout << "You have successfully logged out!" << endl; //for testing purposes only
 }
 
 int registerClientMenu(TaxiService& ts)
@@ -49,13 +49,17 @@ int loginMenu(TaxiService& ts)
 
 int logoutMenu(TaxiService& ts)
 {
-	//tbi
-	return 0;
+	return ts.logout();
 }
 
 int makeOrderMenu(TaxiService& ts)
 {
-	if (!ts.isSignedInAsClient())
+	/*if (!ts.isSignedInAsClient())
+	{
+		cout << "Sorry, you have to be signed as a client to make orders." << endl;
+		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+	}*/
+	if (ts.getCurrentClientIndex() == INVALID_INDEX)
 	{
 		cout << "Sorry, you have to be signed as a client to make orders." << endl;
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
@@ -106,7 +110,13 @@ int makeOrderMenu(TaxiService& ts)
 
 int checkOrderMenu(TaxiService& ts)
 {
-	if (!ts.isSignedInAsClient())
+	/*if (!ts.isSignedInAsClient())
+	{
+		cout << "Sorry, you have to be signed as a client to check orders." << endl;
+		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+	}*/
+
+	if (ts.getCurrentClientIndex() == INVALID_INDEX)
 	{
 		cout << "Sorry, you have to be signed as a client to check orders." << endl;
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
@@ -133,7 +143,13 @@ int checkOrderMenu(TaxiService& ts)
 
 int cancelOrderMenu(TaxiService& ts)
 {
-	if (!ts.isSignedInAsClient())
+	/*if (!ts.isSignedInAsClient())
+	{
+		cout << "Sorry, you have to be signed as a client to cancel orders." << endl;
+		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+	}*/
+
+	if (ts.getCurrentClientIndex() == INVALID_INDEX)
 	{
 		cout << "Sorry, you have to be signed as a client to cancel orders." << endl;
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
@@ -161,7 +177,13 @@ int cancelOrderMenu(TaxiService& ts)
 
 int makePaymentMenu(TaxiService& ts)
 {
-	if (!ts.isSignedInAsClient())
+	/*if (!ts.isSignedInAsClient())
+	{
+		cout << "Sorry, you have to be signed as a client to make payments." << endl;
+		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+	}*/
+
+	if (ts.getCurrentClientIndex() == INVALID_INDEX)
 	{
 		cout << "Sorry, you have to be signed as a client to make payments." << endl;
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
@@ -192,7 +214,12 @@ int makePaymentMenu(TaxiService& ts)
 
 int checkMessagesMenu(TaxiService& ts)
 {
-	if (ts.isSignedInAsClient())
+	/*if (ts.isSignedInAsClient())
+	{
+		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+	}*/
+
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
 	{
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
 	}
@@ -204,13 +231,18 @@ int checkMessagesMenu(TaxiService& ts)
 
 int acceptOrderMenu(TaxiService& ts)
 {
-	if (ts.isSignedInAsClient())
+	/*if (ts.isSignedInAsClient())
 	{
 		cout << "Sorry, you have to be signed as a driver to accept orders." << endl;
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
-	}
-	
+	}*/
 
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	{
+		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+	}
+
+	
 	cout << "Please enter the order id." << endl;
 	int orderID = INVALID_INDEX;
 	cin >> orderID;
@@ -230,9 +262,14 @@ int acceptOrderMenu(TaxiService& ts)
 
 int declineOrderMenu(TaxiService& ts)
 {
-	if (ts.isSignedInAsClient())
+	/*if (ts.isSignedInAsClient())
 	{
 		cout << "Sorry, you have to be signed as a driver to decline orders." << endl;
+		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+	}*/
+
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	{
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
 	}
 	
@@ -255,9 +292,14 @@ int declineOrderMenu(TaxiService& ts)
 
 int finishOrderMenu(TaxiService& ts)
 {
-	if (ts.isSignedInAsClient())
+	/*if (ts.isSignedInAsClient())
 	{
 		cout << "Sorry, you have to be signed as a driver to decline orders." << endl;
+		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+	}*/
+
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	{
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
 	}
 	
@@ -280,8 +322,13 @@ int finishOrderMenu(TaxiService& ts)
 
 int acceptPaymentMenu(TaxiService& ts)
 {
-	if (ts.isSignedInAsClient())
+	//if (ts.isSignedInAsClient())
+	//	return INVALID_ACTION | INVALID_ROLE_LOGIN;
+
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	{
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+	}
 
 	cout << "Please enter the order id." << endl;
 	int orderID = INVALID_INDEX;
@@ -377,14 +424,5 @@ int menu(TaxiService& ts)
 int main()
 {
 	TaxiService ts;
-	Client cl1("client1", "client1password", "client1", "client1");
-	ts.clients.push_back(cl1);
-	Address d1a("Library", 1, 3);
-	Address d2a("Stadium", 50, 40);
-	Driver d1("driver1", "driver1password", "driver1", "driver1", "1234", "0888", d1a);
-	Driver d2("driver2", "driver2password", "driver2", "driver2", "2222", "0887", d2a);
-	ts.drivers.push_back(d1);
-	ts.drivers.push_back(d2);
-	
 	return menu(ts);
 }

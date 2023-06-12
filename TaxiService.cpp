@@ -75,6 +75,7 @@ int TaxiService::logout()
 {
 	this->currentClientIndex = INVALID_INDEX;
 	this->currentDriverIndex = INVALID_INDEX;
+	this->isClient = false;
 	return SUCCESS;
 }
 

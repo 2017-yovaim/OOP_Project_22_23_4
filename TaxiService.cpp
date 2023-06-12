@@ -38,7 +38,7 @@ int TaxiService::login(const MyString& userName, const MyString& password)
 			if (this->drivers[i].isCorrectPassword(password))
 			{
 				this->currentDriverIndex = i;
-				this->isClient = true;
+				this->isClient = false;
 				this->currentClientIndex = INVALID_INDEX;
 				return SUCCESS;
 			}
@@ -57,7 +57,7 @@ int TaxiService::login(const MyString& userName, const MyString& password)
 			if (this->clients[i].isCorrectPassword(password))
 			{
 				this->currentClientIndex = i;
-				this->isClient = false;
+				this->isClient = true;
 				this->currentDriverIndex = INVALID_INDEX;
 				return SUCCESS;
 			}

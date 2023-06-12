@@ -18,7 +18,8 @@ using std::endl;
 
 void actionHandler(int errorCode)
 {
-	//handles what happens when things go wrong (or don't)
+	if (errorCode == SUCCESS)
+		cout << "You have successfully signed in!" << endl; //for testing purposes only
 }
 
 int registerClientMenu(TaxiService& ts)
@@ -35,8 +36,15 @@ int registerDriverMenu(TaxiService& ts)
 
 int loginMenu(TaxiService& ts)
 {
-	//tbi
-	return 0;
+	cin.ignore();
+	cout << "Please enter your user name: " << endl;
+	char buff[1024];
+	cin.getline(buff, 1024);
+	MyString username(buff);
+	cout << "Please enter your password: " << endl;
+	cin.getline(buff, 1024);
+	MyString password(buff);
+	return ts.login(username, password);
 }
 
 int logoutMenu(TaxiService& ts)
@@ -47,7 +55,7 @@ int logoutMenu(TaxiService& ts)
 
 int makeOrderMenu(TaxiService& ts)
 {
-	if (ts.isSignedInAsClient())
+	if (!ts.isSignedInAsClient())
 	{
 		cout << "Sorry, you have to be signed as a client to make orders." << endl;
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
@@ -98,7 +106,7 @@ int makeOrderMenu(TaxiService& ts)
 
 int checkOrderMenu(TaxiService& ts)
 {
-	if (ts.isSignedInAsClient())
+	if (!ts.isSignedInAsClient())
 	{
 		cout << "Sorry, you have to be signed as a client to check orders." << endl;
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
@@ -125,7 +133,7 @@ int checkOrderMenu(TaxiService& ts)
 
 int cancelOrderMenu(TaxiService& ts)
 {
-	if (ts.isSignedInAsClient())
+	if (!ts.isSignedInAsClient())
 	{
 		cout << "Sorry, you have to be signed as a client to cancel orders." << endl;
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
@@ -153,7 +161,7 @@ int cancelOrderMenu(TaxiService& ts)
 
 int makePaymentMenu(TaxiService& ts)
 {
-	if (ts.isSignedInAsClient())
+	if (!ts.isSignedInAsClient())
 	{
 		cout << "Sorry, you have to be signed as a client to make payments." << endl;
 		return INVALID_ACTION | INVALID_ROLE_LOGIN;
@@ -311,6 +319,8 @@ int menu(TaxiService& ts)
 			<< DECLINE_ORDER << " to decline an order, " << FINISH_ORDER << " to finish an order, or " << ACCEPT_PAYMENT << " to accept payment for an order." << endl;
 		cout << "Or you can enter " << EXIT << " to exit the program." << endl;
 		cin >> action;
+		if (action == EXIT)
+			break;
 
 		switch (action)
 		{
@@ -367,5 +377,14 @@ int menu(TaxiService& ts)
 int main()
 {
 	TaxiService ts;
+	Client cl1("client1", "client1password", "client1", "client1");
+	ts.clients.push_back(cl1);
+	Address d1a("Library", 1, 3);
+	Address d2a("Stadium", 50, 40);
+	Driver d1("driver1", "driver1password", "driver1", "driver1", "1234", "0888", d1a);
+	Driver d2("driver2", "driver2password", "driver2", "driver2", "2222", "0887", d2a);
+	ts.drivers.push_back(d1);
+	ts.drivers.push_back(d2);
+	
 	return menu(ts);
 }

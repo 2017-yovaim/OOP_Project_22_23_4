@@ -9,6 +9,7 @@
 class TaxiService
 {
 private:
+
 	MyVector<Client> clients; 
 	MyVector<Driver> drivers;
 	unsigned currentClientIndex = INVALID_INDEX; //when a client logs in, this is set to the index of this user in the vector

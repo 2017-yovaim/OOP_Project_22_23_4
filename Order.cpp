@@ -169,7 +169,7 @@ void Order::describeOrder() const
 	{
 		cout << " accepted." << endl;
 	}
-	else if(isFinished())
+	if(isFinished())
 	{
 		cout << " finished." << endl;
 	}

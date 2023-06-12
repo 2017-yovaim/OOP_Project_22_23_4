@@ -44,7 +44,7 @@ int TaxiService::login(const MyString& userName, const MyString& password)
 			}
 			else
 			{
-				return INVALID_DATA | FAIL_TO_LOG_IN; //user has the right username but not the correct password
+				return INVALID_DATA * FAIL_TO_LOG_IN; //user has the right username but not the correct password
 			}
 		}
 	}
@@ -63,7 +63,7 @@ int TaxiService::login(const MyString& userName, const MyString& password)
 			}
 			else
 			{
-				return INVALID_DATA | FAIL_TO_LOG_IN;
+				return INVALID_DATA * FAIL_TO_LOG_IN;
 			}
 		}
 	}

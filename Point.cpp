@@ -43,19 +43,10 @@ int Point::getY() const
 
 double getDistance(const Point& lhs, const Point& rhs)
 {
-	/*double dx = rhs.getX() - lhs.getX();
-	dx < 0 ? dx = dx * -1 : dx = dx;
-
-	double dy = rhs.getY() - lhs.getY();
-	dy < 0 ? dy = dy * -1 : dy = dy;
-	*/
 	double dx = rhs.getX() - lhs.getX();
-	std::cout << "dx = " << dx << std::endl;
 	double dy = rhs.getY() - lhs.getY();
-	std::cout << "dy = " << dy << std::endl;
 
 	double result = sqrt((dy * dy) + (dx * dx));
-	std::cout << "result = " << result << std::endl;
 	return result;
 }
 

@@ -15,20 +15,20 @@ const unsigned DEFAULT_VECTOR_CAPACITY = 8;
 
 //error codes - 2 ^ n
 const int SUCCESS = 0;
-const int INVALID_DATA = 1;
-const int FAIL_TO_CHANGE_MONEY_AMOUNT = 2;
-const int FAIL_TO_LOG_IN = 4;
-const int FAIL_TO_LOG_OUT = 8;
-const int FAIL_TO_COMPLETE_ORDER = 16;
-const int ORDER_ACCEPTED = 32;
-const int ORDER_DECLINED = 64;
-const int INVALID_ACTION = 128;
-const int INVALID_ROLE_LOGIN = 256;
-const int ORDER_NOT_FOUND = 512;
-const int FAIL_TO_ACCEPT_ORDER = 1024;
-const int FAIL_TO_DECLINE_ORDER = 2048;
-const int FAIL_TO_CANCEL_ORDER = 4096;
-const int FAIL_TO_FINISH_ORDER = 8192;
+const int INVALID_DATA = 2;
+const int FAIL_TO_CHANGE_MONEY_AMOUNT = 3;
+const int FAIL_TO_LOG_IN = 5;
+const int FAIL_TO_LOG_OUT = 7;
+const int FAIL_TO_COMPLETE_ORDER = 11;
+const int ORDER_ACCEPTED = 13;
+const int ORDER_DECLINED = 17;
+const int INVALID_ACTION = 19;
+const int INVALID_ROLE_LOGIN = 23;
+const int ORDER_NOT_FOUND = 29;
+const int FAIL_TO_ACCEPT_ORDER = 31;
+const int FAIL_TO_DECLINE_ORDER = 37;
+const int FAIL_TO_CANCEL_ORDER = 41;
+const int FAIL_TO_FINISH_ORDER = 43;
 const int INVALID_INDEX = -1;
 
 //commands

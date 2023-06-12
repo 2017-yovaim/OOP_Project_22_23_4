@@ -41,7 +41,42 @@ namespace
 
 void actionHandler(int errorCode)
 {
+	//successes
+	if (errorCode == SUCCESS)
+	{
+		cout << "Task completed successfully!" << endl;
+		return;
+	}
+	if (errorCode == ORDER_ACCEPTED)
+	{
+		cout << "The order has been accepted!" << endl;
+		return;
+	}
+	if (errorCode == ORDER_DECLINED)
+	{
+		cout << "The order has been declined!" << endl;
+		return;
+	}
 
+	//errors
+	if (errorCode % INVALID_DATA == 0)
+	{
+		cout << "There has been invalid data." << endl;
+	}
+	if (errorCode % FAIL_TO_CHANGE_MONEY_AMOUNT == 0)
+	{
+		cout << "Fail during money transfer." << endl;
+	}
+	if (errorCode % FAIL_TO_LOG_IN == 0)
+		cout << "Failed to log in." << endl;
+	if (errorCode % FAIL_TO_LOG_OUT == 0)
+		cout << "Failed to log out." << endl;
+	if (errorCode % INVALID_ACTION == 0)
+		cout << "You do not have the right to this action." << endl;
+	if (errorCode % INVALID_ROLE_LOGIN == 0)
+		cout << "This action requires a different login." << endl;
+	if (errorCode % ORDER_NOT_FOUND == 0)
+		cout << "No order with such id found." << endl;
 }
 
 
@@ -105,7 +140,7 @@ int makeOrderMenu(TaxiService& ts)
 	if (ts.getCurrentClientIndex() == INVALID_INDEX)
 	{
 		cout << "Sorry, you have to be signed as a client to make orders." << endl;
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	}
 
 	
@@ -162,7 +197,7 @@ int checkOrderMenu(TaxiService& ts)
 	if (ts.getCurrentClientIndex() == INVALID_INDEX)
 	{
 		cout << "Sorry, you have to be signed as a client to check orders." << endl;
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	}
 
 	cout << "Please enter the order id." << endl;
@@ -181,7 +216,7 @@ int checkOrderMenu(TaxiService& ts)
 		}
 	}
 
-	return INVALID_DATA | ORDER_NOT_FOUND;
+	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
 int cancelOrderMenu(TaxiService& ts)
@@ -195,7 +230,7 @@ int cancelOrderMenu(TaxiService& ts)
 	if (ts.getCurrentClientIndex() == INVALID_INDEX)
 	{
 		cout << "Sorry, you have to be signed as a client to cancel orders." << endl;
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	}
 	
 
@@ -215,7 +250,7 @@ int cancelOrderMenu(TaxiService& ts)
 		}
 	}
 	
-	return INVALID_DATA | ORDER_NOT_FOUND;
+	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
 int makePaymentMenu(TaxiService& ts)
@@ -229,7 +264,7 @@ int makePaymentMenu(TaxiService& ts)
 	if (ts.getCurrentClientIndex() == INVALID_INDEX)
 	{
 		cout << "Sorry, you have to be signed as a client to make payments." << endl;
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	}
 	
 
@@ -252,7 +287,7 @@ int makePaymentMenu(TaxiService& ts)
 		}
 	}
 
-	return INVALID_DATA | ORDER_NOT_FOUND;
+	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
 int checkMessagesMenu(TaxiService& ts)
@@ -264,7 +299,7 @@ int checkMessagesMenu(TaxiService& ts)
 
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
 	{
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	}
 	
 
@@ -282,7 +317,7 @@ int acceptOrderMenu(TaxiService& ts)
 
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
 	{
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	}
 
 	
@@ -299,7 +334,7 @@ int acceptOrderMenu(TaxiService& ts)
 		}
 	}
 
-	return INVALID_DATA | ORDER_NOT_FOUND;
+	return INVALID_DATA * ORDER_NOT_FOUND;
 
 }
 
@@ -313,7 +348,7 @@ int declineOrderMenu(TaxiService& ts)
 
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
 	{
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	}
 	
 
@@ -330,7 +365,7 @@ int declineOrderMenu(TaxiService& ts)
 		}
 	}
 
-	return INVALID_DATA | ORDER_NOT_FOUND;
+	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
 int finishOrderMenu(TaxiService& ts)
@@ -343,7 +378,7 @@ int finishOrderMenu(TaxiService& ts)
 
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
 	{
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	}
 	
 
@@ -360,7 +395,7 @@ int finishOrderMenu(TaxiService& ts)
 		}
 	}
 
-	return INVALID_DATA | ORDER_NOT_FOUND;
+	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
 int acceptPaymentMenu(TaxiService& ts)
@@ -370,7 +405,7 @@ int acceptPaymentMenu(TaxiService& ts)
 
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
 	{
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	}
 
 	cout << "Please enter the order id." << endl;
@@ -390,7 +425,7 @@ int acceptPaymentMenu(TaxiService& ts)
 		}
 	}
 
-	return INVALID_DATA | ORDER_NOT_FOUND;
+	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
 

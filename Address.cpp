@@ -11,6 +11,8 @@ additionalInfo(additionalInfo) {}
 Address::Address(const char* name, const Point& p, const char* additionalInfo) : name(name), coordinates(p),
 additionalInfo(additionalInfo) {}
 
+Address::Address() : coordinates(), name("default address name"), additionalInfo("default address add info") {}
+
 const MyString& Address::getName() const
 {
 	return this->name;
@@ -57,4 +59,14 @@ std::ifstream& Address::readAddress(std::ifstream& input)
 	this->additionalInfo.readString(input);
 
 	return input;
+}
+
+bool Address::operator==(const Address& other) const
+{
+	return this->name == other.name && this->coordinates == other.coordinates && this->additionalInfo == other.additionalInfo;
+}
+
+bool Address::operator!=(const Address& other) const
+{
+	return !(this->operator==(other));
 }

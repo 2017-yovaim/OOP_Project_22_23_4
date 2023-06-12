@@ -60,6 +60,7 @@ int User::setMoneyAccount(double newAmount)
 		return (INVALID_DATA | FAIL_TO_CHANGE_MONEY_AMOUNT);
 
 	this->moneyAccount = newAmount;
+	return SUCCESS;
 
 }
 
@@ -94,3 +95,5 @@ std::ifstream& User::readUser(std::ifstream& input)
 
 	return input;
 }
+
+

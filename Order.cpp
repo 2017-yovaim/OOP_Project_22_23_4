@@ -3,7 +3,7 @@
 using std::cout;
 using std::endl;
 
-int orderIDAssign = 1;
+int Order::orderIDAssign = 1;
 
 
 Order::Order(const Address& from, const Address& to, unsigned passengers) : from(from), to(to)
@@ -39,6 +39,15 @@ Order::Order(const char* fromName, int fromX, int fromY, const char* fromAdditio
 	this->finished = false;
 	this->cancelled = false;
 	this->passengers = passengers;
+}
+
+Order::Order() : from(), to()
+{
+	this->orderID = orderIDAssign++;
+	this->accepted = false;
+	this->finished = false;
+	this->cancelled = false;
+	this->passengers = 1;
 }
 
 int Order::getOrderID() const
@@ -96,15 +105,21 @@ unsigned Order::getClientID() const
 	return this->clientID;
 }
 
+const MyVector<unsigned>& Order::getDeclinedBy() const
+{
+	return this->declinedBy;
+}
+
 void Order::accept(unsigned driverID)
 {
 	this->accepted = true;
 	this->setDriverID(driverID);
 }
 
-void Order::decline()
+void Order::decline(unsigned DriverID)
 {
 	this->accepted = false;
+	this->declinedBy.push_back(DriverID);
 }
 void Order::finish()
 {
@@ -140,7 +155,7 @@ void Order::setFinished(bool finished)
 {
 	this->finished = finished;
 }
-bool Order::setCancelled(bool cancelled)
+void Order::setCancelled(bool cancelled)
 {
 	this->cancelled = cancelled;
 }
@@ -212,5 +227,17 @@ std::ifstream& Order::readOrder(std::ifstream& input)
 	this->setCancelled(tempCancelled);
 	this->setDriverID(tempDriver);
 	this->setClientID(tempClient);
+
+	return input;
+}
+
+bool Order::operator==(const Order& other) const
+{
+	return this->orderID == other.orderID;
+}
+
+bool Order::operator!=(const Order& other) const
+{
+	return !(this->operator==(other));
 }
 

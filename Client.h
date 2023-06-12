@@ -18,10 +18,13 @@ public:
 
 	//possibly system functions
 	int pay(int orderID, double amount); //pays for order
-	int order(const Address& currentAddress, const Address& destination, int passengerCount) const;
-	int checkOrder(int orderID) const;
-	int cancelOrder(int orderID) const;
-	int rate(const MyString& driverFirstName, const MyString& driverLastName, int rating) const;
+	//int order(const Address& currentAddress, const Address& destination, int passengerCount) const;
+	//int checkOrder(int orderID) const;
+	//int cancelOrder(int orderID) const;
+	//int rate(const MyString& driverFirstName, const MyString& driverLastName, int rating) const;
+
+	bool operator==(const Client& other) const;
+	bool operator!=(const Client& other) const;
 
 };
 

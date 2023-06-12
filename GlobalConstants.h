@@ -22,5 +22,30 @@ const int FAIL_TO_LOG_OUT = 8;
 const int FAIL_TO_COMPLETE_ORDER = 16;
 const int ORDER_ACCEPTED = 32;
 const int ORDER_DECLINED = 64;
+const int INVALID_ACTION = 128;
+const int INVALID_ROLE_LOGIN = 256;
+const int ORDER_NOT_FOUND = 512;
+const int FAIL_TO_ACCEPT_ORDER = 1024;
+const int FAIL_TO_DECLINE_ORDER = 2048;
+const int FAIL_TO_CANCEL_ORDER = 4096;
+const int FAIL_TO_FINISH_ORDER = 8192;
 const int INVALID_INDEX = -1;
+
+//commands
+const int EXIT = 0;
+const int REGISTER_CLIENT = 1;
+const int REGISTER_DRIVER = 2;
+const int LOGIN = 3;
+const int LOGOUT = 4;
+const int MAKE_ORDER = 5;
+const int CHECK_ORDER = 6;
+const int CANCEL_ORDER = 7;
+const int MAKE_PAYMENT = 8;
+const int CHECK_MESSAGES = 9;
+const int ACCEPT_ORDER = 10;
+const int DECLINE_ORDER = 11;
+const int FINISH_ORDER = 12;
+const int ACCEPT_PAYMENT = 13;
+
+
 

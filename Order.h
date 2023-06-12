@@ -1,6 +1,7 @@
 #pragma once
 #include "Address.h"
 #include <fstream>
+#include "MyVector.hpp"
 
 
 class Order
@@ -17,6 +18,7 @@ private:
 
 	unsigned driverID = INVALID_INDEX; //id of driver who accepts the order - managed by the system
 	unsigned clientID = INVALID_INDEX; //id of client who makes the order - managed by the system
+	MyVector<unsigned> declinedBy; //ids of drivers who've declined the offer
 	//Order(int orderID, const Address& from, const Address& to, unsigned passengers, bool accepted, bool finished, bool cancelled,
 		//unsigned driverID, unsigned clientID); 
 		//for the reading from binary file
@@ -27,7 +29,7 @@ private:
 	void setPassengers(unsigned passengers);
 	void setAccepted(bool accepted);
 	void setFinished(bool finished);
-	bool setCancelled(bool cancelled);
+	void setCancelled(bool cancelled);
 
 
 public:
@@ -42,10 +44,13 @@ public:
 		const char* toName, int toX, int toY, const char* toAdditionaInfo,
 		unsigned passengers);
 
+	Order();
+
 	int getOrderID() const;
 	const Address& getFrom() const;
 	const Address& getTo() const;
 	unsigned int getPassengers() const;
+	const MyVector<unsigned>& getDeclinedBy() const;
 	bool isAccepted() const;
 	bool isFinished() const;
 	bool isCancelled() const;
@@ -57,14 +62,17 @@ public:
 
 	void describeOrder() const; //basically what checkOrder displays
 
-	//change status flags & alert system of status changes
+	//change status flags
 	void accept(unsigned driverID); //sets accepted to true
-	void decline(); //sets accepted to false
+	void decline(unsigned driverID); //sets accepted to false
 	void finish(); //sets finished to true
 	void cancel(); //sets cancelled to true
 
 	std::ofstream& writeOrder(std::ofstream& output) const;
 	std::ifstream& readOrder(std::ifstream& input);
+
+	bool operator==(const Order& other) const;
+	bool operator!=(const Order& other) const;
 
 
 

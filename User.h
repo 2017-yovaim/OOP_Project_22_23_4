@@ -36,6 +36,7 @@ public:
 	virtual std::ofstream& writeUser(std::ofstream& output) const;
 	virtual std::ifstream& readUser(std::ifstream& input);
 
+
 	virtual ~User() = default; //is this necessary?
 };
 

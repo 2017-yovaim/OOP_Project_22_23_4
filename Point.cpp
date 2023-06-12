@@ -43,13 +43,20 @@ int Point::getY() const
 
 double getDistance(const Point& lhs, const Point& rhs)
 {
-	double dx = rhs.getX() - lhs.getX();
+	/*double dx = rhs.getX() - lhs.getX();
 	dx < 0 ? dx = dx * -1 : dx = dx;
 
 	double dy = rhs.getY() - lhs.getY();
 	dy < 0 ? dy = dy * -1 : dy = dy;
+	*/
+	double dx = rhs.getX() - lhs.getX();
+	std::cout << "dx = " << dx << std::endl;
+	double dy = rhs.getY() - lhs.getY();
+	std::cout << "dy = " << dy << std::endl;
 
-	return sqrt(dy * dy + dx * dx);
+	double result = sqrt((dy * dy) + (dx * dx));
+	std::cout << "result = " << result << std::endl;
+	return result;
 }
 
 //testing needed if writing will work
@@ -70,4 +77,14 @@ std::ifstream& Point::readPoint(std::ifstream& input)
 	this->setX(x);
 	this->setY(y);
 	return input;
+}
+
+bool Point::operator==(const Point& other) const
+{
+	return this->x == other.x && this->y == other.y;
+}
+
+bool Point::operator!=(const Point& other) const
+{
+	return !(this->operator==(other));
 }

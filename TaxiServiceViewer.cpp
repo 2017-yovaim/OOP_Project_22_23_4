@@ -16,22 +16,65 @@ using std::endl;
 *	specifically implement higher-order functions for this
 */
 
+namespace
+{
+	void getUniversalUserData(MyString& username, MyString& password, MyString& firstname, MyString& lastname)
+	{
+		cout << "Please enter your username: " << endl;
+		char buff[1024];
+		cin.getline(buff, 1024);
+		username.setString(buff);
+
+		cout << "Please enter your password: " << endl;
+		cin.getline(buff, 1024);
+		password.setString(buff);
+
+		cout << "Please enter your first name: " << endl;
+		cin.getline(buff, 1024);
+		firstname.setString(buff);
+
+		cout << "Please enter your last name: " << endl;
+		cin.getline(buff, 1024);
+		lastname.setString(buff);
+	}
+}
+
 void actionHandler(int errorCode)
 {
-	if (errorCode == SUCCESS)
-		cout << "You have successfully logged out!" << endl; //for testing purposes only
+
 }
+
 
 int registerClientMenu(TaxiService& ts)
 {
-	//tbi
-	return 0;
+	cin.ignore();
+	MyString username;
+	MyString password;
+	MyString firstname;
+	MyString lastname;
+	getUniversalUserData(username, password, firstname, lastname);
+	return ts.registerClient(username, password, firstname, lastname);
 }
 
 int registerDriverMenu(TaxiService& ts)
 {
-	//tbi
-	return 0;
+	cin.ignore();
+	MyString username;
+	MyString password;
+	MyString firstname;
+	MyString lastname;
+	getUniversalUserData(username, password, firstname, lastname);
+
+	cout << "Please enter your car number: " << endl;
+	char buff[2014];
+	cin.getline(buff, 1024);
+	MyString carnumber(buff);
+
+	cout << "Please enter your phone number: " << endl;
+	cin.getline(buff, 1024);
+	MyString phonenumber(buff);
+
+	return ts.registerDriver(username, password, firstname, lastname, carnumber, phonenumber);
 }
 
 int loginMenu(TaxiService& ts)

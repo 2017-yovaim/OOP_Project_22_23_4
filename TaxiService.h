@@ -50,6 +50,7 @@ public:
 	int rate(unsigned orderID, int rating);
 
 	//driver functions
+	int changeAddress(const Address& newAddress);
 	int acceptOrder(unsigned orderID);
 	int acceptPayment(unsigned orderID, double amount);
 	int declineOrder(unsigned orderID);

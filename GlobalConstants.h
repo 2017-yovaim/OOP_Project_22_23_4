@@ -46,8 +46,9 @@ const int DECLINE_ORDER = 12;
 const int FINISH_ORDER = 13;
 const int ACCEPT_PAYMENT = 14;
 const int CHECK_RATING = 15;
-const int CHANGE_INPUT_PATH = 16;
-const int CHANGE_OUTPUT_PATH = 17;
+const int CHANGE_ADDRESS = 16;
+const int CHANGE_INPUT_PATH = 17;
+const int CHANGE_OUTPUT_PATH = 18;
 
 
 

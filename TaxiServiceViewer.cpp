@@ -338,6 +338,28 @@ int rateMenu(TaxiService& ts)
 	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
+int changeAddressMenu(TaxiService& ts)
+{
+
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	{
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
+	}
+	cin.ignore();
+
+	char buff[1024];
+	cout << "Please enter the name of your new address: " << endl;
+	cin.getline(buff, 1024);
+	//MyString addressname(buff);
+	int x = 0, y = 0;
+	cout << "Please enter the coordinates of your new address: " << endl;
+	cin >> x;
+	cin >> y;
+
+	Address newAddress(buff, x, y);
+	return ts.changeAddress(newAddress);
+}
+
 int checkMessagesMenu(TaxiService& ts)
 {
 	/*if (ts.isSignedInAsClient())
@@ -553,8 +575,8 @@ int menu(TaxiService& ts)
 		cout << endl;
 
 		cout << "As a driver, you can enter " << CHECK_MESSAGES << " to view your messages, " << ACCEPT_ORDER << " to accept an order, "
-			<< DECLINE_ORDER << " to decline an order, " << FINISH_ORDER << " to finish an order" << ACCEPT_PAYMENT << " to accept payment for an order, or " 
-			<< CHECK_RATING << " to check your rating." << endl;
+			<< DECLINE_ORDER << " to decline an order, " << FINISH_ORDER << " to finish an order" << ACCEPT_PAYMENT << " to accept payment for an order, " 
+			<< CHECK_RATING << " to check your rating, or " << CHANGE_ADDRESS << " to change your current address." << endl;
 		cout << endl;
 
 		cout << "Lastly, you can load an existing taxi service file by entering " << CHANGE_INPUT_PATH << " or you can change the place where your taxi service will be saved by entering " << CHANGE_OUTPUT_PATH << endl;
@@ -614,6 +636,9 @@ int menu(TaxiService& ts)
 			break;
 		case CHECK_RATING:
 			actionResult = checkRatingMenu(ts);
+			break;
+		case CHANGE_ADDRESS:
+			actionResult = changeAddressMenu(ts);
 			break;
 		case CHANGE_INPUT_PATH:
 			actionResult = loadTaxiServiceMenu(ts, inputFilePath, outputFilePath);

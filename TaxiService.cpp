@@ -182,6 +182,10 @@ int TaxiService::rate(unsigned orderID, int rating)
 	return SUCCESS;
 }
 
+int TaxiService::changeAddress(const Address& newAddress)
+{
+	return this->drivers[currentDriverIndex].changeAddress(newAddress);
+}
 
 int TaxiService::acceptPayment(unsigned orderID, double amount)
 {

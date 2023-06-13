@@ -10,6 +10,8 @@ private:
 	MyString phoneNumber;
 	Address currentAddress;
 	MyVector<Order> messages;
+	double sumOfAllRatings = 0;
+	double numberOfRatings = 0;
 
 public:
 	Driver();
@@ -32,6 +34,8 @@ public:
 	//int declineOrder(int orderID); //const?
 	//int finishOrder(int orderID); //definitely not const - changes the current address
 	double acceptPayment(double amount);
+	double getAverageRating() const;
+	void addRating(double rating);
 
 	void describeDriver() const;
 

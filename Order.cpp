@@ -165,14 +165,19 @@ void Order::describeOrder() const
 {
 	cout << "Order #" << this->getOrderID() << endl;
 	cout << "Status: ";
-	if (isAccepted())
-	{
-		cout << " accepted." << endl;
-	}
-	if(isFinished())
+	if (isFinished())
 	{
 		cout << " finished." << endl;
 	}
+	else if (isAccepted())
+	{
+		cout << " accepted." << endl;
+	}
+	else
+	{
+		cout << "not accepted yet." << endl;
+	}
+	
 }
 
 std::ofstream& Order::writeOrder(std::ofstream& output) const

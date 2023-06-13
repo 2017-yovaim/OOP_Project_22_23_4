@@ -41,20 +41,24 @@ namespace
 
 void actionHandler(int errorCode)
 {
+	cout << endl;
 	//successes
 	if (errorCode == SUCCESS)
 	{
 		cout << "Task completed successfully!" << endl;
+		cout << endl;
 		return;
 	}
 	if (errorCode == ORDER_ACCEPTED)
 	{
 		cout << "The order has been accepted!" << endl;
+		cout << endl;
 		return;
 	}
 	if (errorCode == ORDER_DECLINED)
 	{
 		cout << "The order has been declined!" << endl;
+		cout << endl;
 		return;
 	}
 
@@ -77,6 +81,8 @@ void actionHandler(int errorCode)
 		cout << "This action requires a different login." << endl;
 	if (errorCode % ORDER_NOT_FOUND == 0)
 		cout << "No order with such id found." << endl;
+
+	cout << endl;
 }
 
 
@@ -212,6 +218,8 @@ int checkOrderMenu(TaxiService& ts)
 			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
 				return INVALID_ACTION;
 			ts.getOrders()[i].describeOrder();
+			if (ts.getOrders()[i].isAccepted())
+				ts.getDrivers()[ts.getOrders()[i].getDriverID()].describeDriver();
 			return SUCCESS;
 		}
 	}
@@ -287,6 +295,42 @@ int makePaymentMenu(TaxiService& ts)
 		}
 	}
 
+	return INVALID_DATA * ORDER_NOT_FOUND;
+}
+
+int rateMenu(TaxiService& ts)
+{
+	if (ts.getCurrentClientIndex() == INVALID_INDEX)
+	{
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
+	}
+
+	cout << "Please enter the order id: " << endl;
+	unsigned orderid;
+	cin >> orderid;
+
+	cout << "Please enter a rating from 1 to 5: " << endl;
+	unsigned rating;
+	cin >> rating;
+
+	while (rating < 1 || rating > 5)
+	{
+		cout << "This is not a valid rating. Please enter a rating from 1 to 5: " << endl;
+		cin >> rating;
+	}
+
+	size_t ordersSize = ts.getOrders().getSize();
+	for (size_t i = 0; i < ordersSize; i++)
+	{
+		if (ts.getOrders()[i].getOrderID() == orderid)
+		{
+			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
+				return INVALID_ACTION;
+			return ts.rate(i, rating);
+		}
+	}
+
+	cout << "ERROR! REACHED END OF RATE MENU! THIS SHOULD NOT HAPPEN!" << endl;
 	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
@@ -428,6 +472,15 @@ int acceptPaymentMenu(TaxiService& ts)
 	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
+int checkRatingMenu(const TaxiService& ts)
+{
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
+
+	cout << "Your current rating is " << ts.checkRating() << endl;
+	return SUCCESS;
+}
+
 
 int menu(TaxiService& ts)
 {
@@ -438,10 +491,18 @@ int menu(TaxiService& ts)
 		cout << "Please select what action you would like to do: " << endl;
 		cout << "Enter " << REGISTER_CLIENT << " to register as a client, " << REGISTER_DRIVER << " to register as a driver, "
 			<< LOGIN << " to log in, or " << LOGOUT << " to log out." << endl;
+		cout << endl;
+
 		cout << "As a client, you can enter " << MAKE_ORDER << " to make an order, " << CHECK_ORDER << " to check an order, "
-			<< CANCEL_ORDER << " to cancel an order, or " << MAKE_PAYMENT << " to pay for your finished order." << endl;
+			<< CANCEL_ORDER << " to cancel an order, " << MAKE_PAYMENT << " to pay for your finished order, or " 
+			<< RATE << " to rate your driver." << endl;
+		cout << endl;
+
 		cout << "As a driver, you can enter " << CHECK_MESSAGES << " to view your messages, " << ACCEPT_ORDER << " to accept an order, "
-			<< DECLINE_ORDER << " to decline an order, " << FINISH_ORDER << " to finish an order, or " << ACCEPT_PAYMENT << " to accept payment for an order." << endl;
+			<< DECLINE_ORDER << " to decline an order, " << FINISH_ORDER << " to finish an order" << ACCEPT_PAYMENT << " to accept payment for an order, or " 
+			<< CHECK_RATING << " to check your rating." << endl;
+		cout << endl;
+
 		cout << "Or you can enter " << EXIT << " to exit the program." << endl;
 		cin >> action;
 		if (action == EXIT)
@@ -473,6 +534,9 @@ int menu(TaxiService& ts)
 		case MAKE_PAYMENT:
 			actionResult = makePaymentMenu(ts);
 			break;
+		case RATE:
+			actionResult = rateMenu(ts);
+			break;
 		case CHECK_MESSAGES:
 			actionResult = checkMessagesMenu(ts);
 			break;
@@ -487,6 +551,9 @@ int menu(TaxiService& ts)
 			break;
 		case ACCEPT_PAYMENT:
 			actionResult = acceptPaymentMenu(ts);
+			break;
+		case CHECK_RATING:
+			actionResult = checkRatingMenu(ts);
 			break;
 		default:
 			actionResult = INVALID_ACTION;

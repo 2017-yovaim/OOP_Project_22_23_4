@@ -56,6 +56,11 @@ void Driver::describeDriver() const
 void Driver::checkMessages() const
 {
 	size_t messagesSize = this->messages.getSize();
+	if (messagesSize == 0)
+	{
+		std::cout << "You have no messages." << std::endl;
+		return;
+	}
 	for (size_t i = 0; i < messagesSize; i++)
 	{
 		this->messages[i].describeOrder();
@@ -73,6 +78,20 @@ int Driver::removeMessage(Order& order)
 	unsigned indexToDelete = this->messages.getIndex(order);
 	this->messages.erase(indexToDelete);
 	return SUCCESS;
+}
+
+double Driver::getAverageRating() const
+{
+	if (this->numberOfRatings != 0)
+		return this->sumOfAllRatings / this->numberOfRatings;
+	else
+		return 0;
+}
+
+void Driver::addRating(double rating)
+{
+	this->sumOfAllRatings += rating;
+	this->numberOfRatings++;
 }
 
 

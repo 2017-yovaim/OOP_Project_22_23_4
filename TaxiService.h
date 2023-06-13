@@ -47,12 +47,14 @@ public:
 	void checkOrder(unsigned orderID) const;
 	int pay(unsigned orderID, double amount);
 	int cancelOrder(unsigned orderID);
+	int rate(unsigned orderID, int rating);
 
 	//driver functions
 	int acceptOrder(unsigned orderID);
 	int acceptPayment(unsigned orderID, double amount);
 	int declineOrder(unsigned orderID);
 	int finishOrder(unsigned orderID);
+	double checkRating() const;
 
 	//miscellaneous
 	bool isSignedInAsClient() const;

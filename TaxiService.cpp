@@ -147,6 +147,11 @@ void TaxiService::checkOrder(unsigned orderID) const
 
 int TaxiService::cancelOrder(unsigned orderID)
 {
+	if (this->orders[orderID].isAccepted())
+	{
+		this->drivers[orders[orderID].getDriverID()].removeMessage(this->orders[orderID]);
+	}
+
 	this->orders[orderID].cancel();
 	return SUCCESS;
 }
@@ -161,6 +166,22 @@ int TaxiService::pay(unsigned orderID, double amount)
 
 	return this->clients[this->orders[orderID].getClientID()].pay(orderID, amount);
 }
+
+int TaxiService::rate(unsigned orderID, int rating)
+{
+	if (this->orders[orderID].getClientID() != this->currentClientIndex)
+	{
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
+	}
+	if (!this->orders[orderID].isFinished())
+	{
+		return INVALID_ACTION;
+	}
+
+	this->drivers[this->orders[orderID].getDriverID()].addRating(rating);
+	return SUCCESS;
+}
+
 
 int TaxiService::acceptPayment(unsigned orderID, double amount)
 {
@@ -204,7 +225,15 @@ int TaxiService::finishOrder(unsigned orderID)
 
 	this->orders[orderID].finish();
 	this->drivers[currentDriverIndex].changeAddress(this->orders[orderID].getTo());
+	this->drivers[currentDriverIndex].removeMessage(this->orders[orderID]);
 	return SUCCESS;
+}
+
+double TaxiService::checkRating() const
+{
+	if (this->currentDriverIndex == INVALID_INDEX)
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
+	return this->drivers[currentDriverIndex].getAverageRating();
 }
 
 std::ofstream& TaxiService::writeTaxiService(std::ofstream& output) const

@@ -41,11 +41,13 @@ const int MAKE_ORDER = 5;
 const int CHECK_ORDER = 6;
 const int CANCEL_ORDER = 7;
 const int MAKE_PAYMENT = 8;
-const int CHECK_MESSAGES = 9;
-const int ACCEPT_ORDER = 10;
-const int DECLINE_ORDER = 11;
-const int FINISH_ORDER = 12;
-const int ACCEPT_PAYMENT = 13;
+const int RATE = 9;
+const int CHECK_MESSAGES = 10;
+const int ACCEPT_ORDER = 11;
+const int DECLINE_ORDER = 12;
+const int FINISH_ORDER = 13;
+const int ACCEPT_PAYMENT = 14;
+const int CHECK_RATING = 15;
 
 
 

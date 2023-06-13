@@ -269,3 +269,43 @@ std::ofstream& TaxiService::writeTaxiService(std::ofstream& output) const
 
 	return output;
 }
+
+std::ifstream& TaxiService::readTaxiService(std::ifstream& input)
+{
+	this->clients.clear();
+	this->drivers.clear();
+	this->orders.clear();
+
+	int currentNumberOfClients = 0;
+	input.read((char*)&currentNumberOfClients, sizeof(currentNumberOfClients));
+	for (int i = 0; i < currentNumberOfClients; i++)
+	{
+		if (i >= this->clients.getSize())
+			this->clients.push_back(Client()); //will resize
+		this->clients[i].readUser(input);
+	}
+
+	int currentNumberOfDrivers = 0;
+	input.read((char*)&currentNumberOfDrivers, sizeof(currentNumberOfDrivers));
+	for (int i = 0; i < currentNumberOfDrivers; i++)
+	{
+		if (i >= this->drivers.getSize())
+			this->drivers.push_back(Driver());
+		this->drivers[i].readUser(input);
+	}
+
+	int currentNumberOfOrders = 0;
+	input.read((char*)&currentNumberOfOrders, sizeof(currentNumberOfOrders));
+	for (int i = 0; i < currentNumberOfOrders; i++)
+	{
+		if (i >= this->orders.getSize())
+			this->orders.push_back(Order());
+		this->orders[i].readOrder(input);
+	}
+
+	double currentTotalProfit = 0;
+	input.read((char*)&currentTotalProfit, sizeof(currentTotalProfit));
+	this->totalProfit = currentTotalProfit;
+
+	return input;
+}

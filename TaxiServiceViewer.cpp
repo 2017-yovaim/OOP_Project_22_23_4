@@ -81,6 +81,10 @@ void actionHandler(int errorCode)
 		cout << "This action requires a different login." << endl;
 	if (errorCode % ORDER_NOT_FOUND == 0)
 		cout << "No order with such id found." << endl;
+	if (errorCode % FAIL_TO_LOAD_DATA == 0)
+		cout << "Could not load taxi service data." << endl;
+	if (errorCode % FAIL_TO_SAVE_DATA == 0)
+		cout << "Could not save taxi service data." << endl;
 
 	cout << endl;
 }
@@ -481,11 +485,61 @@ int checkRatingMenu(const TaxiService& ts)
 	return SUCCESS;
 }
 
+int saveTaxiServiceMenu(TaxiService& ts, char* outputFilePath)
+{
+	cin.ignore();
+	cout << "Please enter the file path for the place where you'd like to save your taxi service data: " << endl;
+	char buff[64];
+	cin.getline(buff, 64);
+	strcpy_s(outputFilePath, 64, buff);
+
+	std::ofstream output(outputFilePath, std::ios::out | std::ios::binary);
+	if (!output.is_open())
+		return FAIL_TO_SAVE_DATA;
+
+	ts.writeTaxiService(output);
+	output.close();
+	return SUCCESS;
+}
+
+int loadTaxiServiceMenu(TaxiService& ts, char* inputFilePath, char* outputFilePath)
+{
+	cout << "Would you like to save your current taxi service data before you load the new one?" << endl;
+	cout << "Enter 1 if you wish to save your current data and 2 if not." << endl;
+	unsigned toSave = 0; 
+	int status = 0;
+	cin >> toSave;
+	if (toSave == 1)
+	{
+		status = saveTaxiServiceMenu(ts, outputFilePath);
+		if (status != SUCCESS)
+			return status;
+	}
+
+	cin.ignore();
+	cout << "Please enter the file path for your taxi service data: " << endl;
+	char buff[64];
+	cin.getline(buff, 64);
+	strcpy_s(inputFilePath, 64, buff);
+
+	std::ifstream input(inputFilePath, std::ios::in | std::ios::binary);
+	if (!input.is_open())
+		return FAIL_TO_LOAD_DATA;
+
+	ts.readTaxiService(input);
+	input.close();
+	return SUCCESS;
+}
+
 
 int menu(TaxiService& ts)
 {
 	cout << "Welcome to the taxi service!" << endl;
 	int action = 0, actionResult = 0;
+	char inputFilePath[64];
+	char outputFilePath[64];
+	strcpy_s(inputFilePath, 64, DEFAULT_FILE_PATH);
+	strcpy_s(outputFilePath, 64, DEFAULT_FILE_PATH);
 	do
 	{
 		cout << "Please select what action you would like to do: " << endl;
@@ -503,7 +557,13 @@ int menu(TaxiService& ts)
 			<< CHECK_RATING << " to check your rating." << endl;
 		cout << endl;
 
+		cout << "Lastly, you can load an existing taxi service file by entering " << CHANGE_INPUT_PATH << " or you can change the place where your taxi service will be saved by entering " << CHANGE_OUTPUT_PATH << endl;
+		cout << "Note that your data automatically gets saved to the location you've specified when you exit the program." << endl;
+		cout << "If you do not specify, the default location is " << DEFAULT_FILE_PATH << endl;
+		cout << endl;
+
 		cout << "Or you can enter " << EXIT << " to exit the program." << endl;
+		cout << endl;
 		cin >> action;
 		if (action == EXIT)
 			break;
@@ -555,6 +615,12 @@ int menu(TaxiService& ts)
 		case CHECK_RATING:
 			actionResult = checkRatingMenu(ts);
 			break;
+		case CHANGE_INPUT_PATH:
+			actionResult = loadTaxiServiceMenu(ts, inputFilePath, outputFilePath);
+			break;
+		case CHANGE_OUTPUT_PATH:
+			actionResult = saveTaxiServiceMenu(ts, outputFilePath);
+			break;
 		default:
 			actionResult = INVALID_ACTION;
 			break;
@@ -563,6 +629,15 @@ int menu(TaxiService& ts)
 	} while (action != EXIT);
 
 	cout << "You have exited the programme. Thank you for using it! Have a great day! " << endl;
+	
+	std::ofstream output(outputFilePath, std::ios::out | std::ios::binary);
+	if (!output.is_open())
+	{
+		cout << "Could not save your data - the file couldn't open." << endl;
+		return FAIL_TO_SAVE_DATA;
+	}
+	ts.writeTaxiService(output);
+	output.close();
 	return SUCCESS;
 }
 

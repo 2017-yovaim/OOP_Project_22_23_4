@@ -61,6 +61,7 @@ public:
 
 
 	std::ofstream& writeTaxiService(std::ofstream& output) const;
+	std::ifstream& readTaxiService(std::ifstream& input);
 
 
 

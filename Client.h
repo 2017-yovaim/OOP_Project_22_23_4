@@ -11,6 +11,7 @@
 class Client : public User
 {
 	//all data for Client is in the User
+
 public:
 	Client();
 	Client(const char* userName, const char* password, const char* firstName, const char* lastName);

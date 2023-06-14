@@ -6,8 +6,7 @@ using std::cin;
 using std::endl;
 
 /*
-* The taxi service viewer includes the main function and manages the operations
-* Also acts as a user interface
+* The taxi service viewer includes the main function and acts as the user interface
 */
 
 /*
@@ -167,7 +166,7 @@ int makeOrderMenu(TaxiService& ts)
 	cin >> fromy;
 
 	cin.ignore();
-	cout << "Please enter any additional info of the initial address (if there isn't any, enter \"\"" << endl;
+	cout << "Please enter any additional info of the initial address (if there isn't any, enter \"\")" << endl;
 	cin.getline(buff, 1024);
 	MyString fromAddInfo(buff);
 	Address from(fromName.c_str(), fromx, fromy, fromAddInfo.c_str());
@@ -182,7 +181,7 @@ int makeOrderMenu(TaxiService& ts)
 	cin >> toy;
 
 	cin.ignore();
-	cout << "Please enter any additional info of the destination address (if there isn't any, enter \"\"" << endl;
+	cout << "Please enter any additional info of the destination address (if there isn't any, enter \"\")" << endl;
 	cin.getline(buff, 1024);
 	MyString toAddInfo(buff);
 	Address to(toName.c_str(), tox, toy, toAddInfo.c_str());
@@ -338,6 +337,25 @@ int rateMenu(TaxiService& ts)
 	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
+int addMoneyMenu(TaxiService& ts)
+{
+	if (ts.getCurrentClientIndex() == INVALID_INDEX)
+		return INVALID_ACTION * INVALID_ROLE_LOGIN * FAIL_TO_CHANGE_MONEY_AMOUNT;
+
+	cout << "Please enter the amount you wish to add to your account: " << endl;
+	double amount;
+	cin >> amount;
+	while (amount <= 0)
+	{
+		cout << "This is not a valid money amount. You must add a positive number." << endl;
+		cout << "Please enter the amount you wish to add to your account again: " << endl;
+		cin >> amount;
+	}
+
+	return ts.addMoney(amount);
+
+}
+
 int changeAddressMenu(TaxiService& ts)
 {
 
@@ -394,12 +412,16 @@ int acceptOrderMenu(TaxiService& ts)
 	cout << "Please enter the order id." << endl;
 	int orderID = INVALID_INDEX;
 	cin >> orderID;
+
+	cout << "Please enter how long it will take you to arrive: " << endl;
+	unsigned int minutes = 0;
+	cin >> minutes;
 	size_t orderCount = ts.getOrders().getSize();
 	for (size_t i = 0; i < orderCount; i++)
 	{
 		if (ts.getOrders()[i].getOrderID() == orderID)
 		{
-			return ts.acceptOrder(i);
+			return ts.acceptOrder(i, minutes);
 			//return SUCCESS;
 		}
 	}
@@ -570,8 +592,8 @@ int menu(TaxiService& ts)
 		cout << endl;
 
 		cout << "As a client, you can enter " << MAKE_ORDER << " to make an order, " << CHECK_ORDER << " to check an order, "
-			<< CANCEL_ORDER << " to cancel an order, " << MAKE_PAYMENT << " to pay for your finished order, or " 
-			<< RATE << " to rate your driver." << endl;
+			<< CANCEL_ORDER << " to cancel an order, " << MAKE_PAYMENT << " to pay for your finished order," 
+			<< RATE << " to rate your driver, or " << ADD_MONEY << " to add money to your account." << endl;
 		cout << endl;
 
 		cout << "As a driver, you can enter " << CHECK_MESSAGES << " to view your messages, " << ACCEPT_ORDER << " to accept an order, "
@@ -586,6 +608,7 @@ int menu(TaxiService& ts)
 
 		cout << "Or you can enter " << EXIT << " to exit the program." << endl;
 		cout << endl;
+
 		cin >> action;
 		if (action == EXIT)
 			break;
@@ -618,6 +641,9 @@ int menu(TaxiService& ts)
 			break;
 		case RATE:
 			actionResult = rateMenu(ts);
+			break;
+		case ADD_MONEY:
+			actionResult = addMoneyMenu(ts);
 			break;
 		case CHECK_MESSAGES:
 			actionResult = checkMessagesMenu(ts);
@@ -658,9 +684,10 @@ int menu(TaxiService& ts)
 	std::ofstream output(outputFilePath, std::ios::out | std::ios::binary);
 	if (!output.is_open())
 	{
-		cout << "Could not save your data - the file couldn't open." << endl;
+		//cout << "Could not save your data - the file couldn't open." << endl;
 		return FAIL_TO_SAVE_DATA;
 	}
+
 	ts.writeTaxiService(output);
 	output.close();
 	return SUCCESS;

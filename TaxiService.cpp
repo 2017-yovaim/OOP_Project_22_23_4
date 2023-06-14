@@ -182,6 +182,14 @@ int TaxiService::rate(unsigned orderID, int rating)
 	return SUCCESS;
 }
 
+int TaxiService::addMoney(unsigned amount)
+{
+	if (this->currentClientIndex == INVALID_INDEX)
+		return INVALID_ACTION * INVALID_ROLE_LOGIN * FAIL_TO_CHANGE_MONEY_AMOUNT;
+
+	return this->clients[currentClientIndex].addMoney(amount);
+}
+
 int TaxiService::changeAddress(const Address& newAddress)
 {
 	return this->drivers[currentDriverIndex].changeAddress(newAddress);
@@ -199,9 +207,10 @@ int TaxiService::acceptPayment(unsigned orderID, double amount)
 	this->totalProfit += amount;
 }
 
-int TaxiService::acceptOrder(unsigned orderID)
+int TaxiService::acceptOrder(unsigned orderID, unsigned minutes)
 {
 	this->orders[orderID].accept(this->currentDriverIndex);
+	this->orders[orderID].setMinutes(minutes);
 	return ORDER_ACCEPTED;
 }
 

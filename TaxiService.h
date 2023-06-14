@@ -48,10 +48,11 @@ public:
 	int pay(unsigned orderID, double amount);
 	int cancelOrder(unsigned orderID);
 	int rate(unsigned orderID, int rating);
+	int addMoney(unsigned amount);
 
 	//driver functions
 	int changeAddress(const Address& newAddress);
-	int acceptOrder(unsigned orderID);
+	int acceptOrder(unsigned orderID, unsigned minutes);
 	int acceptPayment(unsigned orderID, double amount);
 	int declineOrder(unsigned orderID);
 	int finishOrder(unsigned orderID);

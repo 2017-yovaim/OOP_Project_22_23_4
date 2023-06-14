@@ -40,15 +40,16 @@ const int CHECK_ORDER = 6;
 const int CANCEL_ORDER = 7;
 const int MAKE_PAYMENT = 8;
 const int RATE = 9;
-const int CHECK_MESSAGES = 10;
-const int ACCEPT_ORDER = 11;
-const int DECLINE_ORDER = 12;
-const int FINISH_ORDER = 13;
-const int ACCEPT_PAYMENT = 14;
-const int CHECK_RATING = 15;
-const int CHANGE_ADDRESS = 16;
-const int CHANGE_INPUT_PATH = 17;
-const int CHANGE_OUTPUT_PATH = 18;
+const int ADD_MONEY = 10;
+const int CHECK_MESSAGES = 11;
+const int ACCEPT_ORDER = 12;
+const int DECLINE_ORDER = 13;
+const int FINISH_ORDER = 14;
+const int ACCEPT_PAYMENT = 15;
+const int CHECK_RATING = 16;
+const int CHANGE_ADDRESS = 17;
+const int CHANGE_INPUT_PATH = 18;
+const int CHANGE_OUTPUT_PATH = 19;
 
 
 

@@ -12,6 +12,7 @@ private:
 	Address from;
 	Address to;
 	unsigned int passengers;
+	unsigned int minutes = 0;
 	bool accepted;
 	bool finished;
 	bool cancelled;
@@ -51,10 +52,12 @@ public:
 	const Address& getTo() const;
 	unsigned int getPassengers() const;
 	const MyVector<unsigned>& getDeclinedBy() const;
+	unsigned int getMinutes() const;
 	bool isAccepted() const;
 	bool isFinished() const;
 	bool isCancelled() const;
 
+	void setMinutes(unsigned minutes);
 	void setDriverID(unsigned driverID);
 	void setClientID(unsigned clientID);
 	unsigned getDriverID() const;

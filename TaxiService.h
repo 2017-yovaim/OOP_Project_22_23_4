@@ -21,14 +21,12 @@ private:
 	MyVector<Order> orders;
 
 	double totalProfit = 0; //records all profits collected by the drivers
-	bool isClient; //flags whether the currently logged in user is a client or a driver
 	
 	int findNearestDriver(const Order& order, const MyVector<unsigned>& excludedDrivers);
 
 
 
 public:
-	//void run();
 	int login(const MyString& userName, const MyString& password);
 	int logout();
 	int registerClient(const MyString& userName, const MyString& password, const MyString& firstName, 
@@ -41,6 +39,7 @@ public:
 	const MyVector<Order>& getOrders() const;
 	unsigned getCurrentClientIndex() const;
 	unsigned getCurrentDriverIndex() const;
+	double getTotalProfit() const;
 
 	//user functions
 	int order(const Address& from, const Address& to, unsigned passengers);
@@ -53,13 +52,11 @@ public:
 	//driver functions
 	int changeAddress(const Address& newAddress);
 	int acceptOrder(unsigned orderID, unsigned minutes);
-	int acceptPayment(unsigned orderID, double amount);
+	int acceptPayment(unsigned orderID);
 	int declineOrder(unsigned orderID);
 	int finishOrder(unsigned orderID);
 	double checkRating() const;
 
-	//miscellaneous
-	bool isSignedInAsClient() const;
 
 
 	std::ofstream& writeTaxiService(std::ofstream& output) const;

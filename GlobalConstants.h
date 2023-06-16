@@ -7,6 +7,7 @@ const int MAX_LONGITUDE = 180; //180th meridian
 const int MIN_LONGITUDE = 0; //Greenwich meridian
 const unsigned DEFAULT_VECTOR_CAPACITY = 8;
 const char DEFAULT_FILE_PATH[] = "data.dat";
+const char DEFAULT_EMPTY_ADD_INFO[] = "\"\"";
 
 
 //error codes - prime numbers + 0 for success
@@ -27,6 +28,7 @@ const int FAIL_TO_CANCEL_ORDER = 41;
 const int FAIL_TO_FINISH_ORDER = 43;
 const int FAIL_TO_LOAD_DATA = 47;
 const int FAIL_TO_SAVE_DATA = 49;
+const int FAIL_TO_OPEN_FILE = 53; 
 const int INVALID_INDEX = -1;
 
 //commands

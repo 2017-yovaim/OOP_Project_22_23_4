@@ -8,6 +8,7 @@ using std::cin;
 * TO-DO
 * - some data validation is not accurate - fix
 */
+
 	//finds the nearest driver except for those who have already refused the order
 	int TaxiService::findNearestDriver(const Order& order, const MyVector<unsigned>& excludedDrivers)
 	{
@@ -30,6 +31,11 @@ using std::cin;
 
 int TaxiService::login(const MyString& userName, const MyString& password)
 {
+	if (this->currentClientIndex != INVALID_INDEX || this->currentDriverIndex != INVALID_INDEX)
+	{
+		return INVALID_ACTION * FAIL_TO_LOG_IN; //another user is already logged in
+	}
+
 	size_t sizeOfDrivers = this->drivers.getSize();
 	for (size_t i = 0; i < sizeOfDrivers; i++)
 	{
@@ -38,7 +44,6 @@ int TaxiService::login(const MyString& userName, const MyString& password)
 			if (this->drivers[i].isCorrectPassword(password))
 			{
 				this->currentDriverIndex = i;
-				this->isClient = false;
 				this->currentClientIndex = INVALID_INDEX;
 				return SUCCESS;
 			}
@@ -57,7 +62,6 @@ int TaxiService::login(const MyString& userName, const MyString& password)
 			if (this->clients[i].isCorrectPassword(password))
 			{
 				this->currentClientIndex = i;
-				this->isClient = true;
 				this->currentDriverIndex = INVALID_INDEX;
 				return SUCCESS;
 			}
@@ -73,9 +77,13 @@ int TaxiService::login(const MyString& userName, const MyString& password)
 
 int TaxiService::logout()
 {
+	if (this->currentClientIndex == INVALID_INDEX && this->currentDriverIndex == INVALID_INDEX)
+	{
+		return INVALID_ACTION * FAIL_TO_LOG_OUT; //already logged out; no user signed in
+	}
+
 	this->currentClientIndex = INVALID_INDEX;
 	this->currentDriverIndex = INVALID_INDEX;
-	this->isClient = false;
 	return SUCCESS;
 }
 
@@ -95,15 +103,11 @@ int TaxiService::registerDriver(const MyString& userName, const MyString& passwo
 	return SUCCESS;
 }
 
-bool TaxiService::isSignedInAsClient() const
-{
-	return this->isClient;
-}
-
 const MyVector<Client>& TaxiService::getClients() const
 {
 	return this->clients;
 }
+
 const MyVector<Driver>& TaxiService::getDrivers() const
 {
 	return this->drivers;
@@ -124,6 +128,11 @@ unsigned TaxiService::getCurrentDriverIndex() const
 	return this->currentDriverIndex;
 }
 
+double TaxiService::getTotalProfit() const
+{
+	return this->totalProfit;
+}
+
 int TaxiService::order(const Address& from, const Address& to, unsigned passengers)
 {
 	Order temp(from, to, passengers);
@@ -135,9 +144,6 @@ int TaxiService::order(const Address& from, const Address& to, unsigned passenge
 
 void TaxiService::checkOrder(unsigned orderID) const
 {
-	//if (orderID >= this->orders.getSize())
-		//throw std::invalid_argument("No order with such id");
-
 	this->orders[orderID].describeOrder();
 	if (this->orders[orderID].isAccepted())
 	{
@@ -158,13 +164,17 @@ int TaxiService::cancelOrder(unsigned orderID)
 
 int TaxiService::pay(unsigned orderID, double amount)
 {
-	//if (orderID >= this->orders.getSize())
-		//throw std::invalid_argument("No order with such id");
+	//if (!this->orders[orderID].isFinished() || !this->orders[orderID].isAccepted())
+		//throw std::logic_error("Cannot pay for an order that has not been accepted or finished.");
 
-	if (!this->orders[orderID].isFinished() || !this->orders[orderID].isAccepted())
-		throw std::logic_error("Cannot pay for an order that has not been accepted or finished.");
+	int status = this->clients[this->orders[orderID].getClientID()].pay(orderID, amount);
+	if (status != SUCCESS)
+	{
+		return status;
+	}
 
-	return this->clients[this->orders[orderID].getClientID()].pay(orderID, amount);
+	this->orders[orderID].setCost(amount);
+	return status;
 }
 
 int TaxiService::rate(unsigned orderID, int rating)
@@ -195,16 +205,17 @@ int TaxiService::changeAddress(const Address& newAddress)
 	return this->drivers[currentDriverIndex].changeAddress(newAddress);
 }
 
-int TaxiService::acceptPayment(unsigned orderID, double amount)
+int TaxiService::acceptPayment(unsigned orderID)
 {
-	//if (orderID >= this->orders.getSize())
-		//throw std::invalid_argument("No order with such id");
-
 	if (!this->orders[orderID].isFinished() || !this->orders[orderID].isAccepted())
 		throw std::logic_error("Cannot accept payment for an order that has not been accepted or finished.");
 
-	return this->drivers[this->orders[orderID].getDriverID()].acceptPayment(amount);
-	this->totalProfit += amount;
+	int status = this->drivers[this->orders[orderID].getDriverID()].acceptPayment(this->orders[orderID].getCost());
+	if (status != SUCCESS)
+		return status;
+
+	this->totalProfit += this->orders[orderID].getCost();
+	return SUCCESS;
 }
 
 int TaxiService::acceptOrder(unsigned orderID, unsigned minutes)
@@ -224,7 +235,7 @@ int TaxiService::declineOrder(unsigned orderID)
 	int nextDriver = this->findNearestDriver(this->orders[orderID], this->orders[orderID].getDeclinedBy());
 	if (nextDriver == INVALID_INDEX)
 	{
-		return FAIL_TO_DECLINE_ORDER | INVALID_DATA;
+		return FAIL_TO_DECLINE_ORDER * INVALID_DATA;
 	}
 	this->drivers[nextDriver].pushOrder(this->orders[orderID]);
 
@@ -233,9 +244,6 @@ int TaxiService::declineOrder(unsigned orderID)
 
 int TaxiService::finishOrder(unsigned orderID)
 {
-	//if (orderID >= this->orders.getSize())
-		//throw std::invalid_argument("No order with such id");
-
 	this->orders[orderID].finish();
 	this->drivers[currentDriverIndex].changeAddress(this->orders[orderID].getTo());
 	this->drivers[currentDriverIndex].removeMessage(this->orders[orderID]);

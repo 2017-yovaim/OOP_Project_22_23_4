@@ -50,7 +50,7 @@ double getDistance(const Point& lhs, const Point& rhs)
 	return result;
 }
 
-//testing needed if writing will work
+
 std::ofstream& Point::writePoint(std::ofstream& output) const
 {
 	int x = this->getX();

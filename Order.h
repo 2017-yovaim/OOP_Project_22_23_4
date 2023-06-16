@@ -11,18 +11,16 @@ private:
 	int orderID;
 	Address from;
 	Address to;
-	unsigned int passengers;
+	unsigned int passengers = 0;
 	unsigned int minutes = 0;
-	bool accepted;
-	bool finished;
-	bool cancelled;
+	double cost = 0;
+	bool accepted = false;
+	bool finished = false;
+	bool cancelled = false;
 
 	unsigned driverID = INVALID_INDEX; //id of driver who accepts the order - managed by the system
 	unsigned clientID = INVALID_INDEX; //id of client who makes the order - managed by the system
 	MyVector<unsigned> declinedBy; //ids of drivers who've declined the offer
-	//Order(int orderID, const Address& from, const Address& to, unsigned passengers, bool accepted, bool finished, bool cancelled,
-		//unsigned driverID, unsigned clientID); 
-		//for the reading from binary file
 
 	void setOrderID(int orderID);
 	void setFrom(const Address& from);
@@ -34,7 +32,7 @@ private:
 
 
 public:
-	//accepted and finished are set as false by default for all constructors
+	//accepted, finished and cancelled are set as false by default for all constructors
 	Order(const Address& from, const Address& to, unsigned passengers);
 
 	Order(const char* fromName, int fromX, int fromY,
@@ -51,19 +49,21 @@ public:
 	const Address& getFrom() const;
 	const Address& getTo() const;
 	unsigned int getPassengers() const;
+	double getCost() const;
 	const MyVector<unsigned>& getDeclinedBy() const;
 	unsigned int getMinutes() const;
 	bool isAccepted() const;
 	bool isFinished() const;
 	bool isCancelled() const;
 
+	void setCost(double amount);
 	void setMinutes(unsigned minutes);
 	void setDriverID(unsigned driverID);
 	void setClientID(unsigned clientID);
 	unsigned getDriverID() const;
 	unsigned getClientID() const;
 
-	void describeOrder() const; //basically what checkOrder displays
+	void describeOrder() const; //what checkOrder displays
 
 	//change status flags
 	void accept(unsigned driverID); //sets accepted to true

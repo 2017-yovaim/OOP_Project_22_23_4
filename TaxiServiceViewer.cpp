@@ -9,12 +9,6 @@ using std::endl;
 * The taxi service viewer includes the main function and acts as the user interface
 */
 
-/*
-* TO-DO:
-* - extremely unoptimized. Fix when code works as intended
-*	specifically implement higher-order functions for this
-*/
-
 namespace
 {
 	void getUniversalUserData(MyString& username, MyString& password, MyString& firstname, MyString& lastname)
@@ -22,19 +16,23 @@ namespace
 		cout << "Please enter your username: " << endl;
 		char buff[1024];
 		cin.getline(buff, 1024);
-		username.setString(buff);
+		MyString tempUserName(buff);
+		username = tempUserName;
 
 		cout << "Please enter your password: " << endl;
 		cin.getline(buff, 1024);
-		password.setString(buff);
+		MyString tempPassword(buff);
+		password = tempPassword;
 
 		cout << "Please enter your first name: " << endl;
 		cin.getline(buff, 1024);
-		firstname.setString(buff);
+		MyString tempFirstName(buff);
+		firstname = tempFirstName;
 
 		cout << "Please enter your last name: " << endl;
 		cin.getline(buff, 1024);
-		lastname.setString(buff);
+		MyString tempLastName(buff);
+		lastname = tempLastName;
 	}
 }
 
@@ -48,12 +46,14 @@ void actionHandler(int errorCode)
 		cout << endl;
 		return;
 	}
+
 	if (errorCode == ORDER_ACCEPTED)
 	{
 		cout << "The order has been accepted!" << endl;
 		cout << endl;
 		return;
 	}
+
 	if (errorCode == ORDER_DECLINED)
 	{
 		cout << "The order has been declined!" << endl;
@@ -63,27 +63,34 @@ void actionHandler(int errorCode)
 
 	//errors
 	if (errorCode % INVALID_DATA == 0)
-	{
 		cout << "There has been invalid data." << endl;
-	}
+
 	if (errorCode % FAIL_TO_CHANGE_MONEY_AMOUNT == 0)
-	{
 		cout << "Fail during money transfer." << endl;
-	}
+
 	if (errorCode % FAIL_TO_LOG_IN == 0)
 		cout << "Failed to log in." << endl;
+
 	if (errorCode % FAIL_TO_LOG_OUT == 0)
 		cout << "Failed to log out." << endl;
+
 	if (errorCode % INVALID_ACTION == 0)
 		cout << "You do not have the right to this action." << endl;
+
 	if (errorCode % INVALID_ROLE_LOGIN == 0)
 		cout << "This action requires a different login." << endl;
+
 	if (errorCode % ORDER_NOT_FOUND == 0)
 		cout << "No order with such id found." << endl;
+
 	if (errorCode % FAIL_TO_LOAD_DATA == 0)
 		cout << "Could not load taxi service data." << endl;
+
 	if (errorCode % FAIL_TO_SAVE_DATA == 0)
 		cout << "Could not save taxi service data." << endl;
+
+	if (errorCode % FAIL_TO_OPEN_FILE == 0)
+		cout << "Could not open file." << endl;
 
 	cout << endl;
 }
@@ -92,17 +99,20 @@ void actionHandler(int errorCode)
 int registerClientMenu(TaxiService& ts)
 {
 	cin.ignore();
+
 	MyString username;
 	MyString password;
 	MyString firstname;
 	MyString lastname;
 	getUniversalUserData(username, password, firstname, lastname);
+
 	return ts.registerClient(username, password, firstname, lastname);
 }
 
 int registerDriverMenu(TaxiService& ts)
 {
 	cin.ignore();
+
 	MyString username;
 	MyString password;
 	MyString firstname;
@@ -124,13 +134,16 @@ int registerDriverMenu(TaxiService& ts)
 int loginMenu(TaxiService& ts)
 {
 	cin.ignore();
+
 	cout << "Please enter your user name: " << endl;
 	char buff[1024];
 	cin.getline(buff, 1024);
 	MyString username(buff);
+
 	cout << "Please enter your password: " << endl;
 	cin.getline(buff, 1024);
 	MyString password(buff);
+
 	return ts.login(username, password);
 }
 
@@ -141,24 +154,17 @@ int logoutMenu(TaxiService& ts)
 
 int makeOrderMenu(TaxiService& ts)
 {
-	/*if (!ts.isSignedInAsClient())
-	{
-		cout << "Sorry, you have to be signed as a client to make orders." << endl;
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
-	}*/
 	if (ts.getCurrentClientIndex() == INVALID_INDEX)
-	{
-		cout << "Sorry, you have to be signed as a client to make orders." << endl;
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
 
 	
 	cin.ignore();
+
 	cout << "Please enter the name of the initial address: " << endl;
 	char buff[1024];
 	cin.getline(buff, 1024);
-	
 	MyString fromName(buff);
+
 	cout << "Please enter the coordinates of the initial address: " << endl;
 	int fromx;
 	cin >> fromx;
@@ -166,14 +172,16 @@ int makeOrderMenu(TaxiService& ts)
 	cin >> fromy;
 
 	cin.ignore();
-	cout << "Please enter any additional info of the initial address (if there isn't any, enter \"\")" << endl;
+	cout << "Please enter any additional info of the initial address (if there isn't any, enter " << DEFAULT_EMPTY_ADD_INFO << ")" << endl;
 	cin.getline(buff, 1024);
 	MyString fromAddInfo(buff);
+
 	Address from(fromName.c_str(), fromx, fromy, fromAddInfo.c_str());
 
 	cout << "Please enter the name of the destionation address: " << endl;
 	cin.getline(buff, 1024);
 	MyString toName(buff);
+
 	cout << "Please enter the coordinates of the destination address: " << endl;
 	int tox;
 	cin >> tox;
@@ -181,9 +189,10 @@ int makeOrderMenu(TaxiService& ts)
 	cin >> toy;
 
 	cin.ignore();
-	cout << "Please enter any additional info of the destination address (if there isn't any, enter \"\")" << endl;
+	cout << "Please enter any additional info of the destination address (if there isn't any, enter " << DEFAULT_EMPTY_ADD_INFO << ")" << endl;
 	cin.getline(buff, 1024);
 	MyString toAddInfo(buff);
+
 	Address to(toName.c_str(), tox, toy, toAddInfo.c_str());
 
 	unsigned passengers;
@@ -197,17 +206,8 @@ int makeOrderMenu(TaxiService& ts)
 
 int checkOrderMenu(TaxiService& ts)
 {
-	/*if (!ts.isSignedInAsClient())
-	{
-		cout << "Sorry, you have to be signed as a client to check orders." << endl;
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
-	}*/
-
 	if (ts.getCurrentClientIndex() == INVALID_INDEX)
-	{
-		cout << "Sorry, you have to be signed as a client to check orders." << endl;
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
 
 	cout << "Please enter the order id." << endl;
 	unsigned orderid;
@@ -220,9 +220,11 @@ int checkOrderMenu(TaxiService& ts)
 		{
 			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
 				return INVALID_ACTION;
+
 			ts.getOrders()[i].describeOrder();
 			if (ts.getOrders()[i].isAccepted())
 				ts.getDrivers()[ts.getOrders()[i].getDriverID()].describeDriver();
+
 			return SUCCESS;
 		}
 	}
@@ -232,17 +234,8 @@ int checkOrderMenu(TaxiService& ts)
 
 int cancelOrderMenu(TaxiService& ts)
 {
-	/*if (!ts.isSignedInAsClient())
-	{
-		cout << "Sorry, you have to be signed as a client to cancel orders." << endl;
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
-	}*/
-
 	if (ts.getCurrentClientIndex() == INVALID_INDEX)
-	{
-		cout << "Sorry, you have to be signed as a client to cancel orders." << endl;
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
 	
 
 	cout << "Please enter the order id." << endl;
@@ -256,6 +249,7 @@ int cancelOrderMenu(TaxiService& ts)
 		{
 			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
 				return INVALID_ACTION;
+
 			ts.cancelOrder(i);
 			return SUCCESS;
 		}
@@ -266,17 +260,8 @@ int cancelOrderMenu(TaxiService& ts)
 
 int makePaymentMenu(TaxiService& ts)
 {
-	/*if (!ts.isSignedInAsClient())
-	{
-		cout << "Sorry, you have to be signed as a client to make payments." << endl;
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
-	}*/
-
 	if (ts.getCurrentClientIndex() == INVALID_INDEX)
-	{
-		cout << "Sorry, you have to be signed as a client to make payments." << endl;
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
 	
 
 	cout << "Please enter the order id." << endl;
@@ -294,6 +279,7 @@ int makePaymentMenu(TaxiService& ts)
 		{
 			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
 				return INVALID_ACTION;
+
 			return ts.pay(i, amount);
 		}
 	}
@@ -304,9 +290,7 @@ int makePaymentMenu(TaxiService& ts)
 int rateMenu(TaxiService& ts)
 {
 	if (ts.getCurrentClientIndex() == INVALID_INDEX)
-	{
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
 
 	cout << "Please enter the order id: " << endl;
 	unsigned orderid;
@@ -329,11 +313,11 @@ int rateMenu(TaxiService& ts)
 		{
 			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
 				return INVALID_ACTION;
+
 			return ts.rate(i, rating);
 		}
 	}
 
-	cout << "ERROR! REACHED END OF RATE MENU! THIS SHOULD NOT HAPPEN!" << endl;
 	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
@@ -360,15 +344,13 @@ int changeAddressMenu(TaxiService& ts)
 {
 
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
-	{
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
+
 	cin.ignore();
 
 	char buff[1024];
 	cout << "Please enter the name of your new address: " << endl;
 	cin.getline(buff, 1024);
-	//MyString addressname(buff);
 	int x = 0, y = 0;
 	cout << "Please enter the coordinates of your new address: " << endl;
 	cin >> x;
@@ -380,15 +362,8 @@ int changeAddressMenu(TaxiService& ts)
 
 int checkMessagesMenu(TaxiService& ts)
 {
-	/*if (ts.isSignedInAsClient())
-	{
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
-	}*/
-
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
-	{
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
 	
 
 	ts.getDrivers()[ts.getCurrentDriverIndex()].checkMessages();
@@ -397,16 +372,9 @@ int checkMessagesMenu(TaxiService& ts)
 
 int acceptOrderMenu(TaxiService& ts)
 {
-	/*if (ts.isSignedInAsClient())
-	{
-		cout << "Sorry, you have to be signed as a driver to accept orders." << endl;
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
-	}*/
 
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
-	{
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
 
 	
 	cout << "Please enter the order id." << endl;
@@ -422,7 +390,6 @@ int acceptOrderMenu(TaxiService& ts)
 		if (ts.getOrders()[i].getOrderID() == orderID)
 		{
 			return ts.acceptOrder(i, minutes);
-			//return SUCCESS;
 		}
 	}
 
@@ -432,16 +399,8 @@ int acceptOrderMenu(TaxiService& ts)
 
 int declineOrderMenu(TaxiService& ts)
 {
-	/*if (ts.isSignedInAsClient())
-	{
-		cout << "Sorry, you have to be signed as a driver to decline orders." << endl;
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
-	}*/
-
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
-	{
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
 	
 
 	cout << "Please enter the order id." << endl;
@@ -462,16 +421,8 @@ int declineOrderMenu(TaxiService& ts)
 
 int finishOrderMenu(TaxiService& ts)
 {
-	/*if (ts.isSignedInAsClient())
-	{
-		cout << "Sorry, you have to be signed as a driver to decline orders." << endl;
-		return INVALID_ACTION | INVALID_ROLE_LOGIN;
-	}*/
-
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
-	{
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
 	
 
 	cout << "Please enter the order id." << endl;
@@ -492,28 +443,19 @@ int finishOrderMenu(TaxiService& ts)
 
 int acceptPaymentMenu(TaxiService& ts)
 {
-	//if (ts.isSignedInAsClient())
-	//	return INVALID_ACTION | INVALID_ROLE_LOGIN;
-
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
-	{
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
 
 	cout << "Please enter the order id." << endl;
 	int orderID = INVALID_INDEX;
 	cin >> orderID;
-
-	cout << "Please enter the amount." << endl;
-	double amount;
-	cin >> amount;
 
 	size_t orderCount = ts.getOrders().getSize();
 	for (size_t i = 0; i < orderCount; i++)
 	{
 		if (ts.getOrders()[i].getOrderID() == orderID)
 		{
-			return ts.acceptPayment(i, amount);
+			return ts.acceptPayment(i);
 		}
 	}
 
@@ -539,7 +481,7 @@ int saveTaxiServiceMenu(TaxiService& ts, char* outputFilePath)
 
 	std::ofstream output(outputFilePath, std::ios::out | std::ios::binary);
 	if (!output.is_open())
-		return FAIL_TO_SAVE_DATA;
+		return FAIL_TO_SAVE_DATA * FAIL_TO_OPEN_FILE;
 
 	ts.writeTaxiService(output);
 	output.close();
@@ -568,7 +510,7 @@ int loadTaxiServiceMenu(TaxiService& ts, char* inputFilePath, char* outputFilePa
 
 	std::ifstream input(inputFilePath, std::ios::in | std::ios::binary);
 	if (!input.is_open())
-		return FAIL_TO_LOAD_DATA;
+		return FAIL_TO_LOAD_DATA * FAIL_TO_OPEN_FILE;
 
 	ts.readTaxiService(input);
 	input.close();
@@ -592,12 +534,12 @@ int menu(TaxiService& ts)
 		cout << endl;
 
 		cout << "As a client, you can enter " << MAKE_ORDER << " to make an order, " << CHECK_ORDER << " to check an order, "
-			<< CANCEL_ORDER << " to cancel an order, " << MAKE_PAYMENT << " to pay for your finished order," 
+			<< CANCEL_ORDER << " to cancel an order, " << MAKE_PAYMENT << " to pay for your finished order, " 
 			<< RATE << " to rate your driver, or " << ADD_MONEY << " to add money to your account." << endl;
 		cout << endl;
 
 		cout << "As a driver, you can enter " << CHECK_MESSAGES << " to view your messages, " << ACCEPT_ORDER << " to accept an order, "
-			<< DECLINE_ORDER << " to decline an order, " << FINISH_ORDER << " to finish an order" << ACCEPT_PAYMENT << " to accept payment for an order, " 
+			<< DECLINE_ORDER << " to decline an order, " << FINISH_ORDER << " to finish an order, " << ACCEPT_PAYMENT << " to accept payment for an order, " 
 			<< CHECK_RATING << " to check your rating, or " << CHANGE_ADDRESS << " to change your current address." << endl;
 		cout << endl;
 
@@ -677,15 +619,15 @@ int menu(TaxiService& ts)
 			break;
 		}
 		actionHandler(actionResult);
+
 	} while (action != EXIT);
 
-	cout << "You have exited the programme. Thank you for using it! Have a great day! " << endl;
+	cout << "You have exited the program. Thank you for using it! Have a great day! " << endl;
 	
 	std::ofstream output(outputFilePath, std::ios::out | std::ios::binary);
 	if (!output.is_open())
 	{
-		//cout << "Could not save your data - the file couldn't open." << endl;
-		return FAIL_TO_SAVE_DATA;
+		return FAIL_TO_SAVE_DATA * FAIL_TO_OPEN_FILE;
 	}
 
 	ts.writeTaxiService(output);

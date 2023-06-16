@@ -197,10 +197,3 @@ std::ifstream& MyString::readString(std::ifstream & input)
 
 	return input;
 }
-
-void MyString::setString(const char* data)
-{
-	delete[] this->_data;
-	this->_data = new char[strlen(data) + 1];
-	strcpy_s(this->_data, strlen(data) + 1, data);
-}

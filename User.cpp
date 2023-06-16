@@ -2,6 +2,7 @@
 
 
 User::User() : User("default_user_name", "defaultPassword", "John", "Doe") {}
+
 User::User(const char* userName, const char* password, const char* firstName, const char* lastName)
 {
 	if (userName == nullptr || strlen(userName) == 0)
@@ -23,13 +24,15 @@ const MyString& User::getUserName() const
 {
 	return this->userName;
 }
+
 void User::setUserName(const char* newUserName)
 {
 	if (newUserName == nullptr || strlen(newUserName) == 0)
-		throw std::invalid_argument("Invalid new user name is User userName setter");
+		throw std::invalid_argument("Invalid new user name in User userName setter");
 
 	this->userName = newUserName;
 }
+
 void User::setPassword(const char* oldPassword, const char* newPassword)
 {
 	if (oldPassword != this->password)
@@ -39,6 +42,7 @@ void User::setPassword(const char* oldPassword, const char* newPassword)
 		throw std::invalid_argument("Invalid new password in User password setter");
 	this->password = newPassword;
 }
+
 const MyString& User::getFirstName() const
 {
 	return this->firstName;
@@ -57,8 +61,10 @@ double User::getMoneyAmount() const
 int User::setMoneyAccount(double newAmount)
 {
 	if (newAmount < 0)
-		return (INVALID_DATA | FAIL_TO_CHANGE_MONEY_AMOUNT);
-
+	{
+		return (INVALID_DATA * FAIL_TO_CHANGE_MONEY_AMOUNT);
+	}
+	
 	this->moneyAccount = newAmount;
 	return SUCCESS;
 

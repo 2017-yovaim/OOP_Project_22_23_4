@@ -54,8 +54,6 @@ public:
 	bool contains(const T& el) const; //checks if an element is present in the vector
 	int getIndex(const T& el) const; //returns index if el is in the vector or -1 if it isn't
 
-	void printElements() const; //for testing purposes
-
 	const T& operator[](unsigned index) const;
 	T& operator[](unsigned index);
 
@@ -184,12 +182,9 @@ void MyVector<T>::push_back(T&& el)
 template <typename T>
 void MyVector<T>::insert(const T& el, unsigned index)
 {
-	//do I swap or linearly move??
-	//let's go with the swap
 
 	if (index >= this->capacity)
 		throw std::invalid_argument("could not insert - no such index");
-
 
 	if (this->size == this->capacity)
 		this->resize();
@@ -225,7 +220,7 @@ void MyVector<T>::erase(unsigned index)
 {
 	if (index >= this->size)
 		throw std::invalid_argument("Could not erase - no element at the index");
-	//swapping again - this time with the last element
+
 	swapT(this->data[size - 1], this->data[index]);
 	this->size--;
 }
@@ -250,11 +245,13 @@ bool MyVector<T>::contains(const T& el) const
 {
 	if (this->isEmpty())
 		return false;
+
 	for (unsigned i = 0; i < this->size; i++)
 	{
 		if (this->data[i] == el)
 			return true;
 	}
+
 	return false;
 }
 
@@ -291,20 +288,4 @@ T& MyVector<T>::operator[](unsigned index)
 		throw std::invalid_argument("wrong index in []");
 
 	return this->data[index];
-}
-
-template<typename T>
-void MyVector<T>::printElements() const
-{
-	if (this->isEmpty())
-	{
-		std::cout << "Vector is empty" << std::endl;
-		return;
-	}
-
-	for (size_t i = 0; i < this->size; i++)
-	{
-		std::cout << this->data[i] << " ";
-	}
-	std::cout << std::endl;
 }

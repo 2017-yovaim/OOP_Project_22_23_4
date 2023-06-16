@@ -1,17 +1,20 @@
 #include "Driver.h"
 
-Driver::Driver() : User("default_driver_username", "defaultPassword", "John", "Doe"),
-carNumber("1234A"), phoneNumber("0888888888"),
-currentAddress("Default Driver Address", 0, 0, "This is the default driver address")
+Driver::Driver() : 
+	User("default_driver_username", "defaultPassword", "John", "Doe"),
+	carNumber("1234A"), phoneNumber("0888888888"),
+	currentAddress("Default Driver Address", 0, 0, "This is the default driver address")
 {}
 
 Driver::Driver(const char* userName, const char* password, const char* firstName, const char* lastName,
 	const char* carNumber, const char* phoneNumber, const Address& currentAddress) :
-	User(userName, password, firstName, lastName), carNumber(carNumber), phoneNumber(phoneNumber),
+	User(userName, password, firstName, lastName), 
+	carNumber(carNumber), phoneNumber(phoneNumber),
 	currentAddress(currentAddress) {}
 
 Driver::Driver(const char* userName, const char* password, const char* firstName, const char* lastName,
-	const char* carNumber, const char* phoneNumber) : User(userName, password, firstName, lastName),
+	const char* carNumber, const char* phoneNumber) : 
+	User(userName, password, firstName, lastName),
 	carNumber(carNumber), phoneNumber(phoneNumber), 
 	currentAddress("Default Driver Address", 0, 0, "This is the default driver address")
 {}
@@ -42,6 +45,7 @@ double Driver::acceptPayment(double amount)
 	{
 		return FAIL_TO_CHANGE_MONEY_AMOUNT;
 	}
+
 	this->setMoneyAccount(this->getMoneyAmount() + amount);
 	return SUCCESS;
 }
@@ -56,11 +60,13 @@ void Driver::describeDriver() const
 void Driver::checkMessages() const
 {
 	size_t messagesSize = this->messages.getSize();
+
 	if (messagesSize == 0)
 	{
 		std::cout << "You have no messages." << std::endl;
 		return;
 	}
+
 	for (size_t i = 0; i < messagesSize; i++)
 	{
 		this->messages[i].describeOrder();
@@ -80,6 +86,7 @@ int Driver::removeMessage(Order& order)
 	return SUCCESS;
 }
 
+//returns the average of all ratings
 double Driver::getAverageRating() const
 {
 	if (this->numberOfRatings != 0)
@@ -93,7 +100,6 @@ void Driver::addRating(double rating)
 	this->sumOfAllRatings += rating;
 	this->numberOfRatings++;
 }
-
 
 
 std::ofstream& Driver::writeUser(std::ofstream& output) const

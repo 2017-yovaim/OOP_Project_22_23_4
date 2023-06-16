@@ -1,6 +1,5 @@
 //code by Angel Dimitriev: https://github.com/Angeld55/Object-oriented_programming_FMI/blob/master/Week%2009/MyString%20(with%20move)/MyString.h
 //changes made - added functions for writing and reading in binary files
-//added function for setting string data
 
 
 #pragma once
@@ -42,8 +41,6 @@ public:
 
 	std::ofstream& writeString(std::ofstream& output) const;
 	std::ifstream& readString(std::ifstream& input);
-
-	void setString(const char* data);
 };
 
 std::ostream& operator<<(std::ostream& os, const MyString& str);

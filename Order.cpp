@@ -120,6 +120,21 @@ const MyVector<unsigned>& Order::getDeclinedBy() const
 	return this->declinedBy;
 }
 
+double Order::getCost() const
+{
+	return this->cost;
+}
+
+//add exception handling
+void Order::setCost(double amount)
+{
+	if (amount <= 0)
+		return;
+
+	this->cost = amount;
+
+}
+
 void Order::accept(unsigned driverID)
 {
 	this->accepted = true;
@@ -181,6 +196,10 @@ void Order::setCancelled(bool cancelled)
 void Order::describeOrder() const
 {
 	cout << "Order #" << this->getOrderID() << endl;
+	cout << "From ";
+	this->getFrom().describeAddress();
+	cout << "To ";
+	this->getTo().describeAddress();
 	cout << "Status:";
 	if (isFinished())
 	{
@@ -210,6 +229,9 @@ std::ofstream& Order::writeOrder(std::ofstream& output) const
 
 	unsigned tempMinutes = this->getMinutes();
 	output.write((const char*)&tempMinutes, sizeof(tempMinutes));
+
+	double tempCost = this->getCost();
+	output.write((const char*)&tempCost, sizeof(tempCost));
 
 	bool boolValues = this->accepted;
 	output.write((const char*)&boolValues, sizeof(boolValues));
@@ -246,6 +268,9 @@ std::ifstream& Order::readOrder(std::ifstream& input)
 	unsigned tempMinutes = 0;
 	input.read((char*)&tempMinutes, sizeof(tempMinutes));
 
+	double tempCost = 0;
+	input.read((char*)&tempCost, sizeof(tempCost));
+
 	bool tempAccepted = false;
 	input.read((char*)&tempAccepted, sizeof(tempAccepted));
 
@@ -266,6 +291,7 @@ std::ifstream& Order::readOrder(std::ifstream& input)
 	this->setTo(tempTo);
 	this->setPassengers(tempPassengers);
 	this->setMinutes(tempMinutes);
+	this->setCost(tempCost);
 	this->setAccepted(tempAccepted);
 	this->setFinished(tempFinished);
 	this->setCancelled(tempCancelled);

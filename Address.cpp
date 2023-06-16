@@ -1,4 +1,5 @@
 #include "Address.h"
+#include <iostream>
 
 Address::Address(const char* name, int x, int y) : name(name), coordinates(x, y)
 {}
@@ -38,6 +39,7 @@ const MyString& Address::getAdditionalInfo() const
 	return this->additionalInfo;
 }
 
+//distance between address coordinates
 double getAddressesDistance(const Address& lhs, const Address& rhs)
 {
 	return getDistance(lhs.getCoordinates(), rhs.getCoordinates());
@@ -59,6 +61,18 @@ std::ifstream& Address::readAddress(std::ifstream& input)
 	this->additionalInfo.readString(input);
 
 	return input;
+}
+
+void Address::describeAddress() const
+{
+	std::cout << this->getName().c_str() << " " << this->getX() << " " << this->getY() << " ";
+
+	if (strcmp(this->getAdditionalInfo().c_str(), DEFAULT_EMPTY_ADD_INFO))
+	{
+		std::cout << this->getAdditionalInfo().c_str();
+	}
+
+	std::cout << std::endl;
 }
 
 bool Address::operator==(const Address& other) const

@@ -122,15 +122,27 @@ std::ifstream& Driver::readUser(std::ifstream& input)
 	return input;
 }
 
-bool Driver::operator==(const Driver& other) const
+//bool Driver::operator==(const Driver& other) const
+//{
+//	return this->getUserName() == other.getUserName() && this->getFirstName() == other.getFirstName()
+//		&& this->getCarNumber() == other.getCarNumber() && this->getPhoneNumber() == other.getPhoneNumber()
+//		&& this->getCurrentAddress() == other.getCurrentAddress();
+//}
+//
+//bool Driver::operator!=(const Driver& other) const
+//{
+//	return !(this->operator==(other));
+//}
+
+bool operator==(const Driver& lhs, const Driver& rhs)
 {
-	return this->getUserName() == other.getUserName() && this->getFirstName() == other.getFirstName()
-		&& this->getCarNumber() == other.getCarNumber() && this->getPhoneNumber() == other.getPhoneNumber()
-		&& this->getCurrentAddress() == other.getCurrentAddress();
+	return lhs.getUserName() == rhs.getUserName() && lhs.getFirstName() == rhs.getFirstName()
+		&& lhs.getCarNumber() == rhs.getCarNumber() && lhs.getPhoneNumber() == rhs.getPhoneNumber()
+		&& lhs.getCurrentAddress() == rhs.getCurrentAddress();
 }
 
-bool Driver::operator!=(const Driver& other) const
+bool operator!=(const Driver& lhs, const Driver& rhs)
 {
-	return !(this->operator==(other));
+	return !(lhs == rhs);
 }
 

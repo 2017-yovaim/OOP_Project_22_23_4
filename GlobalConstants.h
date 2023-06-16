@@ -12,24 +12,29 @@ const char DEFAULT_EMPTY_ADD_INFO[] = "\"\"";
 
 //error codes - prime numbers + 0 for success
 const int SUCCESS = 0;
-const int INVALID_DATA = 2;
-const int FAIL_TO_CHANGE_MONEY_AMOUNT = 3;
-const int FAIL_TO_LOG_IN = 5;
-const int FAIL_TO_LOG_OUT = 7;
-const int FAIL_TO_COMPLETE_ORDER = 11;
-const int ORDER_ACCEPTED = 13;
-const int ORDER_DECLINED = 17;
-const int INVALID_ACTION = 19;
-const int INVALID_ROLE_LOGIN = 23;
-const int ORDER_NOT_FOUND = 29;
-const int FAIL_TO_ACCEPT_ORDER = 31;
-const int FAIL_TO_DECLINE_ORDER = 37;
-const int FAIL_TO_CANCEL_ORDER = 41;
-const int FAIL_TO_FINISH_ORDER = 43;
-const int FAIL_TO_LOAD_DATA = 47;
-const int FAIL_TO_SAVE_DATA = 49;
-const int FAIL_TO_OPEN_FILE = 53; 
 const int INVALID_INDEX = -1;
+const int INVALID_ACTION = 2;
+const int INVALID_DATA = 3;
+const int FAIL_TO_REGISTER = 5;
+const int FAIL_TO_LOG_IN = 7;
+const int FAIL_TO_LOG_OUT = 9;
+const int INVALID_ROLE_LOGIN = 11;
+const int FAIL_TO_COMPLETE_ORDER = -13;
+const int FAIL_TO_CHANGE_MONEY_AMOUNT = 17;
+const int ORDER_ACCEPTED = 29;
+const int ORDER_DECLINED = 31;
+const int ORDER_NOT_FOUND = 37;
+const int FAIL_TO_ACCEPT_ORDER = 41;
+const int FAIL_TO_DECLINE_ORDER = 43;
+const int FAIL_TO_CANCEL_ORDER = 47;
+const int FAIL_TO_FINISH_ORDER = 53;
+const int FAIL_TO_LOAD_DATA = 59;
+const int FAIL_TO_SAVE_DATA = 61;
+const int FAIL_TO_OPEN_FILE = 67; 
+const int ORDER_NOT_ACCEPTED = 71;
+const int ORDER_NOT_FINISHED = 73;
+const int FAIL_TO_START_SYSTEM = 79;
+
 
 //commands
 const int EXIT = 0;

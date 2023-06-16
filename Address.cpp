@@ -45,6 +45,7 @@ double getAddressesDistance(const Address& lhs, const Address& rhs)
 	return getDistance(lhs.getCoordinates(), rhs.getCoordinates());
 }
 
+//writes first the name then the coordinates then the additional info
 std::ofstream& Address::writeAddress(std::ofstream& output) const
 {
 	this->name.writeString(output);
@@ -54,6 +55,7 @@ std::ofstream& Address::writeAddress(std::ofstream& output) const
 	return output;
 }
 
+//reads the address into an already existing object
 std::ifstream& Address::readAddress(std::ifstream& input)
 {
 	this->name.readString(input);
@@ -63,6 +65,7 @@ std::ifstream& Address::readAddress(std::ifstream& input)
 	return input;
 }
 
+//describes address for the console interface
 void Address::describeAddress() const
 {
 	std::cout << this->getName().c_str() << " " << this->getX() << " " << this->getY() << " ";
@@ -75,12 +78,23 @@ void Address::describeAddress() const
 	std::cout << std::endl;
 }
 
-bool Address::operator==(const Address& other) const
+//bool Address::operator==(const Address& other) const
+//{
+//	return this->name == other.name && this->coordinates == other.coordinates && this->additionalInfo == other.additionalInfo;
+//}
+//
+//bool Address::operator!=(const Address& other) const
+//{
+//	return !(this->operator==(other));
+//}
+
+bool operator==(const Address& lhs, const Address& rhs)
 {
-	return this->name == other.name && this->coordinates == other.coordinates && this->additionalInfo == other.additionalInfo;
+	return lhs.getName() == rhs.getName() && lhs.getCoordinates() == rhs.getCoordinates() &&
+		lhs.getAdditionalInfo() == rhs.getAdditionalInfo();
 }
 
-bool Address::operator!=(const Address& other) const
+bool operator!=(const Address& lhs, const Address& rhs)
 {
-	return !(this->operator==(other));
+	return !(lhs == rhs);
 }

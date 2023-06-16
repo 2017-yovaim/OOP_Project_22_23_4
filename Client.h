@@ -2,12 +2,6 @@
 #include "User.h"
 #include "Address.h"
 
-//TO-DO
-/*
-* - improve consistency - sometimes you use const char (star), other times - MyString
-*/
-
-
 class Client : public User
 {
 	//all data for Client is in the User
@@ -20,8 +14,11 @@ public:
 
 	int pay(int orderID, double amount); //pays for order
 
-	bool operator==(const Client& other) const;
-	bool operator!=(const Client& other) const;
+	//bool operator==(const Client& other) const;
+	//bool operator!=(const Client& other) const;
 
 };
+
+bool operator==(const Client& lhs, const Client& rhs);
+bool operator!=(const Client& lhs, const Client& rhs);
 

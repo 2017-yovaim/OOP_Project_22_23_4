@@ -20,14 +20,23 @@ int Client::pay(int orderID, double amount)
 	return this->setMoneyAccount(this->getMoneyAmount() - amount);
 }
 
-bool Client::operator==(const Client& other) const
-{
-	return this->getUserName() == other.getUserName() &&
-		this->getFirstName() == other.getFirstName() && this->getLastName() == other.getLastName();
-}
+//bool Client::operator==(const Client& other) const
+//{
+//	return this->getUserName() == other.getUserName() &&
+//		this->getFirstName() == other.getFirstName() && this->getLastName() == other.getLastName();
+//}
+//
+//bool Client::operator!=(const Client& other) const
+//{
+//	return !(this->operator==(other));
+//}
 
-bool Client::operator!=(const Client& other) const
+bool operator==(const Client& lhs, const Client& rhs)
 {
-	return !(this->operator==(other));
+	return lhs.getUserName() == rhs.getUserName() && lhs.getFirstName() == rhs.getFirstName() && lhs.getLastName() == rhs.getLastName();
+}
+bool operator!=(const Client& lhs, const Client& rhs)
+{
+	return !(lhs == rhs);
 }
 

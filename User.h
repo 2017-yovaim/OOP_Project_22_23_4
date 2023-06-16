@@ -3,10 +3,6 @@
 #include "GlobalConstants.h"
 #include <fstream>
 
-//TO-DO
-/*
-* - Exception handling
-*/
 
 class User
 {

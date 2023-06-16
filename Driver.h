@@ -29,6 +29,8 @@ public:
 	const Address& getCurrentAddress() const;
 	int changeAddress(const Address& newAddress);
 
+	//when the driver receives a message, the system pushed it here
+	//if the driver declines an order, the system removes it
 	int pushOrder(Order& order);
 	int removeMessage(Order& order);
 
@@ -42,7 +44,10 @@ public:
 	virtual std::ofstream& writeUser(std::ofstream& output) const override;
 	virtual std::ifstream& readUser(std::ifstream& input) override;
 
-	virtual bool operator==(const Driver& other) const;
-	virtual bool operator!=(const Driver& other) const;
+	//bool operator==(const Driver& other) const;
+	//bool operator!=(const Driver& other) const;
 };
+
+bool operator==(const Driver& lhs, const Driver& rhs);
+bool operator!=(const Driver & lhs, const Driver & rhs);
 

@@ -11,6 +11,8 @@ using std::endl;
 
 namespace
 {
+	//gets data shared between clients and drivers
+	//acts as a common function during register
 	void getUniversalUserData(MyString& username, MyString& password, MyString& firstname, MyString& lastname)
 	{
 		cout << "Please enter your username: " << endl;
@@ -36,6 +38,7 @@ namespace
 	}
 }
 
+//writes a message depending on the outcome of the desired operation
 void actionHandler(int errorCode)
 {
 	cout << endl;
@@ -62,11 +65,14 @@ void actionHandler(int errorCode)
 	}
 
 	//errors
+	if (errorCode % INVALID_ACTION == 0)
+		cout << "You do not have the right to this action." << endl;
+
 	if (errorCode % INVALID_DATA == 0)
 		cout << "There has been invalid data." << endl;
 
-	if (errorCode % FAIL_TO_CHANGE_MONEY_AMOUNT == 0)
-		cout << "Fail during money transfer." << endl;
+	if (errorCode % FAIL_TO_REGISTER == 0)
+		cout << "Failed to register." << endl;
 
 	if (errorCode % FAIL_TO_LOG_IN == 0)
 		cout << "Failed to log in." << endl;
@@ -74,14 +80,32 @@ void actionHandler(int errorCode)
 	if (errorCode % FAIL_TO_LOG_OUT == 0)
 		cout << "Failed to log out." << endl;
 
-	if (errorCode % INVALID_ACTION == 0)
-		cout << "You do not have the right to this action." << endl;
-
 	if (errorCode % INVALID_ROLE_LOGIN == 0)
 		cout << "This action requires a different login." << endl;
+	
+	if (errorCode % FAIL_TO_COMPLETE_ORDER == 0)
+		cout << "Failed to complete your order." << endl;
+
+	if (errorCode % FAIL_TO_CHANGE_MONEY_AMOUNT == 0)
+		cout << "Fail during money transfer." << endl;
+
+	if (errorCode % FAIL_TO_ACCEPT_ORDER == 0)
+		cout << "Failed to accept order." << endl;
+
+	if (errorCode % FAIL_TO_DECLINE_ORDER == 0)
+		cout << "Failed to decline order." << endl;
+
+	if (errorCode % FAIL_TO_FINISH_ORDER == 0)
+		cout << "Failed to finish order." << endl;
 
 	if (errorCode % ORDER_NOT_FOUND == 0)
 		cout << "No order with such id found." << endl;
+
+	if (errorCode % ORDER_NOT_ACCEPTED == 0)
+		cout << "This order has not been accepted yet." << endl;
+
+	if (errorCode % ORDER_NOT_FINISHED == 0)
+		cout << "This order has not been finished yet." << endl;
 
 	if (errorCode % FAIL_TO_LOAD_DATA == 0)
 		cout << "Could not load taxi service data." << endl;
@@ -154,6 +178,7 @@ int logoutMenu(TaxiService& ts)
 
 int makeOrderMenu(TaxiService& ts)
 {
+	//only clients can be orders
 	if (ts.getCurrentClientIndex() == INVALID_INDEX)
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
@@ -170,6 +195,20 @@ int makeOrderMenu(TaxiService& ts)
 	cin >> fromx;
 	int fromy;
 	cin >> fromy;
+
+	while (fromx < MIN_LATITUDE || fromx > MAX_LATITUDE)
+	{
+		cout << "The first coordinate is not valid. It has to be between " << MIN_LATITUDE << " and " << MAX_LATITUDE << endl;
+		cout << "Please enter it again: " << endl;
+		cin >> fromx;
+	}
+
+	while (fromy < MIN_LONGITUDE || fromy > MAX_LONGITUDE)
+	{
+		cout << "The second coordinate is not valid. It has to be between " << MIN_LONGITUDE << " and " << MAX_LONGITUDE << endl;
+		cout << "Please enter it again: " << endl;
+		cin >> fromy;
+	}
 
 	cin.ignore();
 	cout << "Please enter any additional info of the initial address (if there isn't any, enter " << DEFAULT_EMPTY_ADD_INFO << ")" << endl;
@@ -188,6 +227,20 @@ int makeOrderMenu(TaxiService& ts)
 	int toy;
 	cin >> toy;
 
+	while (tox < MIN_LATITUDE || tox > MAX_LATITUDE)
+	{
+		cout << "The first coordinate is not valid. It has to be between " << MIN_LATITUDE << " and " << MAX_LATITUDE << endl;
+		cout << "Please enter it again: " << endl;
+		cin >> tox;
+	}
+
+	while (toy < MIN_LONGITUDE || toy > MAX_LONGITUDE)
+	{
+		cout << "The second coordinate is not valid. It has to be between " << MIN_LONGITUDE << " and " << MAX_LONGITUDE << endl;
+		cout << "Please enter it again: " << endl;
+		cin >> toy;
+	}
+
 	cin.ignore();
 	cout << "Please enter any additional info of the destination address (if there isn't any, enter " << DEFAULT_EMPTY_ADD_INFO << ")" << endl;
 	cin.getline(buff, 1024);
@@ -200,6 +253,9 @@ int makeOrderMenu(TaxiService& ts)
 	cin >> passengers;
 
 	unsigned idoforder = ts.order(from, to, passengers);
+	if (idoforder == FAIL_TO_COMPLETE_ORDER)
+		return FAIL_TO_COMPLETE_ORDER;
+
 	cout << "Order made! Your order's id is: " << idoforder << endl;
 	return SUCCESS;
 }
@@ -218,14 +274,10 @@ int checkOrderMenu(TaxiService& ts)
 	{
 		if (ts.getOrders()[i].getOrderID() == orderid)
 		{
-			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
-				return INVALID_ACTION;
+			if (ts.getOrders()[i].getClientID() != ts.getCurrentClientIndex())
+				return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
-			ts.getOrders()[i].describeOrder();
-			if (ts.getOrders()[i].isAccepted())
-				ts.getDrivers()[ts.getOrders()[i].getDriverID()].describeDriver();
-
-			return SUCCESS;
+			return ts.checkOrder(i);
 		}
 	}
 
@@ -248,10 +300,9 @@ int cancelOrderMenu(TaxiService& ts)
 		if (ts.getOrders()[i].getOrderID() == orderid)
 		{
 			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
-				return INVALID_ACTION;
+				return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
-			ts.cancelOrder(i);
-			return SUCCESS;
+			return ts.cancelOrder(i);
 		}
 	}
 	
@@ -278,7 +329,7 @@ int makePaymentMenu(TaxiService& ts)
 		if (ts.getOrders()[i].getOrderID() == orderid)
 		{
 			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
-				return INVALID_ACTION;
+				return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
 			return ts.pay(i, amount);
 		}
@@ -312,7 +363,7 @@ int rateMenu(TaxiService& ts)
 		if (ts.getOrders()[i].getOrderID() == orderid)
 		{
 			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
-				return INVALID_ACTION;
+				return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
 			return ts.rate(i, rating);
 		}
@@ -356,6 +407,20 @@ int changeAddressMenu(TaxiService& ts)
 	cin >> x;
 	cin >> y;
 
+	while (x < MIN_LATITUDE || x > MAX_LATITUDE)
+	{
+		cout << "This is not a valid first coordinate. It has to be between " << MIN_LATITUDE << " and " << MAX_LATITUDE << endl;
+		cout << "Please enter it again: " << endl;
+		cin >> x;
+	}
+
+	while (y < MIN_LONGITUDE || y > MAX_LONGITUDE)
+	{
+		cout << "This is not a valid second coordinate. It has to be between " << MIN_LONGITUDE << " and " << MAX_LONGITUDE << endl;
+		cout << "Please enter it again: " << endl;
+		cin >> y;
+	}
+
 	Address newAddress(buff, x, y);
 	return ts.changeAddress(newAddress);
 }
@@ -372,7 +437,6 @@ int checkMessagesMenu(TaxiService& ts)
 
 int acceptOrderMenu(TaxiService& ts)
 {
-
 	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
@@ -637,6 +701,24 @@ int menu(TaxiService& ts)
 
 int main()
 {
-	TaxiService ts;
-	return menu(ts);
+	try
+	{
+		TaxiService ts;
+		return menu(ts);
+	}
+	catch (const std::invalid_argument& iae)
+	{
+		cout << iae.what() << endl;
+		return FAIL_TO_START_SYSTEM;
+	}
+	catch (const std::exception& ex)
+	{
+		cout << ex.what() << endl;
+		return FAIL_TO_START_SYSTEM;
+	}
+	catch (...)
+	{
+		return FAIL_TO_START_SYSTEM;
+	}
+
 }

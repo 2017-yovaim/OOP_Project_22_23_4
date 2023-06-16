@@ -7,7 +7,9 @@
 class Order
 {
 private:
+
 	static int orderIDAssign;
+
 	int orderID;
 	Address from;
 	Address to;
@@ -20,7 +22,7 @@ private:
 
 	unsigned driverID = INVALID_INDEX; //id of driver who accepts the order - managed by the system
 	unsigned clientID = INVALID_INDEX; //id of client who makes the order - managed by the system
-	MyVector<unsigned> declinedBy; //ids of drivers who've declined the offer
+	MyVector<unsigned> declinedBy; //ids of drivers who've declined the offer - managed by the system
 
 	void setOrderID(int orderID);
 	void setFrom(const Address& from);
@@ -32,6 +34,7 @@ private:
 
 
 public:
+
 	//accepted, finished and cancelled are set as false by default for all constructors
 	Order(const Address& from, const Address& to, unsigned passengers);
 
@@ -74,11 +77,14 @@ public:
 	std::ofstream& writeOrder(std::ofstream& output) const;
 	std::ifstream& readOrder(std::ifstream& input);
 
-	bool operator==(const Order& other) const;
-	bool operator!=(const Order& other) const;
+	//bool operator==(const Order& other) const;
+	//bool operator!=(const Order& other) const;
 
 
 
 };
+
+bool operator==(const Order& lhs, const Order& rhs);
+bool operator!=(const Order& lhs, const Order& rhs);
 
 

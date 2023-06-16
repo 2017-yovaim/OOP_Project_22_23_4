@@ -13,6 +13,8 @@ Order::Order(const Address& from, const Address& to, unsigned passengers) : from
 	this->finished = false;
 	this->cancelled = false;
 	this->passengers = passengers;
+	this->minutes = 0;
+	this->cost = 0;
 }
 
 Order::Order(const char* fromName, int fromX, int fromY,
@@ -26,6 +28,8 @@ Order::Order(const char* fromName, int fromX, int fromY,
 	this->finished = false;
 	this->cancelled = false;
 	this->passengers = passengers;
+	this->minutes = 0;
+	this->cost = 0;
 }
 
 Order::Order(const char* fromName, int fromX, int fromY, const char* fromAdditionalInfo,
@@ -39,6 +43,8 @@ Order::Order(const char* fromName, int fromX, int fromY, const char* fromAdditio
 	this->finished = false;
 	this->cancelled = false;
 	this->passengers = passengers;
+	this->minutes = 0;
+	this->cost = 0;
 }
 
 Order::Order() : from(), to()
@@ -216,6 +222,7 @@ void Order::describeOrder() const
 	
 }
 
+
 std::ofstream& Order::writeOrder(std::ofstream& output) const
 {
 	int orderid = this->getOrderID();
@@ -251,6 +258,7 @@ std::ofstream& Order::writeOrder(std::ofstream& output) const
 	return output;
 }
 
+//reads order into an already existing object
 std::ifstream& Order::readOrder(std::ifstream& input)
 {
 	int orderid = 0;
@@ -301,13 +309,23 @@ std::ifstream& Order::readOrder(std::ifstream& input)
 	return input;
 }
 
-bool Order::operator==(const Order& other) const
+//bool Order::operator==(const Order& other) const
+//{
+//	return this->orderID == other.orderID;
+//}
+//
+//bool Order::operator!=(const Order& other) const
+//{
+//	return !(this->operator==(other));
+//}
+
+bool operator==(const Order& lhs, const Order& rhs)
 {
-	return this->orderID == other.orderID;
+	return lhs.getOrderID() == rhs.getOrderID();
 }
 
-bool Order::operator!=(const Order& other) const
+bool operator!=(const Order& lhs, const Order& rhs)
 {
-	return !(this->operator==(other));
+	return lhs.getOrderID() != rhs.getOrderID();
 }
 

@@ -1,10 +1,6 @@
 #include "Point.h"
 #include <iostream>
 
-//TO-DO
-/*
-* - Exception handling
-*/
 
 void Point::setX(int x)
 {
@@ -14,6 +10,7 @@ void Point::setX(int x)
 		throw std::invalid_argument("Latitude is bigger than biggest possible");
 	this->x = x;
 }
+
 void Point::setY(int y)
 {
 	if (y < MIN_LONGITUDE)
@@ -60,6 +57,7 @@ std::ofstream& Point::writePoint(std::ofstream& output) const
 	return output;
 }
 
+//reads each coordinate in an already built object of type Point
 std::ifstream& Point::readPoint(std::ifstream& input)
 {
 	int x, y;
@@ -70,12 +68,22 @@ std::ifstream& Point::readPoint(std::ifstream& input)
 	return input;
 }
 
-bool Point::operator==(const Point& other) const
+//bool Point::operator==(const Point& other) const
+//{
+//	return this->x == other.x && this->y == other.y;
+//}
+//
+//bool Point::operator!=(const Point& other) const
+//{
+//	return !(this->operator==(other));
+//}
+
+bool operator==(const Point& lhs, const Point& rhs)
 {
-	return this->x == other.x && this->y == other.y;
+	return lhs.getX() == rhs.getX() && lhs.getY() == rhs.getY();
 }
 
-bool Point::operator!=(const Point& other) const
+bool operator!=(const Point& lhs, const Point& rhs)
 {
-	return !(this->operator==(other));
+	return !(lhs == rhs);
 }

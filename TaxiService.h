@@ -6,6 +6,10 @@
 #include "Order.h"
 #include <fstream>
 
+/*
+* the system which manages the taxi service
+*/
+
 class TaxiService
 {
 private:
@@ -21,6 +25,8 @@ private:
 	double totalProfit = 0; //records all profits collected by the drivers
 	
 	int findNearestDriver(const Order& order, const MyVector<unsigned>& excludedDrivers);
+	bool isCorrectClient(unsigned orderID) const;
+	bool isCorrectDriver(unsigned orderID) const;
 
 
 

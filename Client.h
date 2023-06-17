@@ -14,9 +14,6 @@ public:
 
 	int pay(int orderID, double amount); //pays for order
 
-	//bool operator==(const Client& other) const;
-	//bool operator!=(const Client& other) const;
-
 };
 
 bool operator==(const Client& lhs, const Client& rhs);

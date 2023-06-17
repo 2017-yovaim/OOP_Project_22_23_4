@@ -14,22 +14,11 @@ int Client::addMoney(double amount)
 
 int Client::pay(int orderID, double amount)
 {
-	if (amount > this->getMoneyAmount())
+	if (amount > this->getMoneyAmount()) //not enough money in user account
 		return FAIL_TO_CHANGE_MONEY_AMOUNT;
 
 	return this->setMoneyAccount(this->getMoneyAmount() - amount);
 }
-
-//bool Client::operator==(const Client& other) const
-//{
-//	return this->getUserName() == other.getUserName() &&
-//		this->getFirstName() == other.getFirstName() && this->getLastName() == other.getLastName();
-//}
-//
-//bool Client::operator!=(const Client& other) const
-//{
-//	return !(this->operator==(other));
-//}
 
 bool operator==(const Client& lhs, const Client& rhs)
 {

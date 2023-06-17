@@ -131,7 +131,7 @@ double Order::getCost() const
 	return this->cost;
 }
 
-//add exception handling
+
 void Order::setCost(double amount)
 {
 	if (amount <= 0)
@@ -198,7 +198,7 @@ void Order::setCancelled(bool cancelled)
 	this->cancelled = cancelled;
 }
 
-//the rest will be done by the system
+//what the system displays on the console. driver information will be printed by the system separately
 void Order::describeOrder() const
 {
 	cout << "Order #" << this->getOrderID() << endl;
@@ -308,16 +308,6 @@ std::ifstream& Order::readOrder(std::ifstream& input)
 
 	return input;
 }
-
-//bool Order::operator==(const Order& other) const
-//{
-//	return this->orderID == other.orderID;
-//}
-//
-//bool Order::operator!=(const Order& other) const
-//{
-//	return !(this->operator==(other));
-//}
 
 bool operator==(const Order& lhs, const Order& rhs)
 {

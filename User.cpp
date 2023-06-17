@@ -3,22 +3,10 @@
 
 User::User() : User("default_user_name", "defaultPassword", "John", "Doe") {}
 
-User::User(const char* userName, const char* password, const char* firstName, const char* lastName)
-{
-	if (userName == nullptr || strlen(userName) == 0)
-		throw std::invalid_argument("Invalid userName in User constructor");
-	if (password == nullptr || strlen(password) == 0)
-		throw std::invalid_argument("Invalid password in User constructor");
-	if (firstName == nullptr || strlen(firstName) == 0)
-		throw std::invalid_argument("Invalid first name in User constructor");
-	if (lastName == nullptr || strlen(lastName) == 0)
-		throw std::invalid_argument("Invalid last name in User constructor");
+User::User(const char* userName, const char* password, const char* firstName, const char* lastName) : 
+	userName(userName), password(password), firstName(firstName), lastName(lastName)
 
-	this->userName = userName;
-	this->password = password;
-	this->firstName = firstName;
-	this->lastName = lastName;
-}
+{}
 
 const MyString& User::getUserName() const
 {
@@ -27,19 +15,14 @@ const MyString& User::getUserName() const
 
 void User::setUserName(const char* newUserName)
 {
-	if (newUserName == nullptr || strlen(newUserName) == 0)
-		throw std::invalid_argument("Invalid new user name in User userName setter");
-
 	this->userName = newUserName;
 }
 
 void User::setPassword(const char* oldPassword, const char* newPassword)
 {
-	if (oldPassword != this->password)
-		return; //password doesn't match the old password
+	if (oldPassword != this->password) //password doesn't match the old password
+		return; 
 
-	if (newPassword == nullptr || strlen(newPassword) == 0)
-		throw std::invalid_argument("Invalid new password in User password setter");
 	this->password = newPassword;
 }
 
@@ -88,6 +71,7 @@ std::ofstream& User::writeUser(std::ofstream& output) const
 	return output;
 }
 
+//reads data from binary file into an already built object
 std::ifstream& User::readUser(std::ifstream& input)
 {
 	this->userName.readString(input);

@@ -27,6 +27,18 @@ using std::cin;
 		return nearestDriverIndex;
 	}
 
+	//checks if the currently logged in client is the one associated with a certain order
+	bool TaxiService::isCorrectClient(unsigned orderID) const
+	{
+		return this->orders[orderID].getClientID() == this->getCurrentClientIndex();
+	}
+
+	//checks if the currently logged in driver is the one associated with a certain order
+	bool TaxiService::isCorrectDriver(unsigned orderID) const
+	{
+		return this->orders[orderID].getDriverID() == this->getCurrentDriverIndex();
+	}
+
 	const MyVector<Client>& TaxiService::getClients() const
 	{
 		return this->clients;
@@ -106,7 +118,7 @@ using std::cin;
 
 	}
 
-
+//logs a user in - looks for a match between the entered username and the entered password
 int TaxiService::login(const MyString& userName, const MyString& password)
 {
 	if (this->currentClientIndex != INVALID_INDEX || this->currentDriverIndex != INVALID_INDEX)
@@ -166,8 +178,6 @@ int TaxiService::logout()
 }
 
 
-
-
 int TaxiService::order(const Address& from, const Address& to, unsigned passengers)
 {
 	Order temp(from, to, passengers);
@@ -186,9 +196,8 @@ int TaxiService::order(const Address& from, const Address& to, unsigned passenge
 
 int TaxiService::checkOrder(unsigned orderID) const
 {
-	/*if (this->orders[orderID].getClientID() != currentClientIndex)
-		return INVALID_ACTION * INVALID_ROLE_LOGIN; //user was not the one who made the order
-		*/
+	if (!this->isCorrectClient(orderID)) //user was not the one who made the order
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
 	this->orders[orderID].describeOrder();
 	if (this->orders[orderID].isAccepted())
@@ -201,6 +210,16 @@ int TaxiService::checkOrder(unsigned orderID) const
 
 int TaxiService::cancelOrder(unsigned orderID)
 {
+	if (!this->isCorrectClient(orderID)) //user was not the one who made the order
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
+
+	//cannot cancel an order that has been finished or already cancelled
+	if (this->orders[orderID].isFinished())
+		return INVALID_ACTION;
+
+	if (this->orders[orderID].isCancelled())
+		return INVALID_ACTION * ORDER_CANCELLED;
+
 	//if a driver has already accepted the order, the system notifies him by removing it from his messages
 	if (this->orders[orderID].isAccepted())
 	{
@@ -213,6 +232,9 @@ int TaxiService::cancelOrder(unsigned orderID)
 
 int TaxiService::pay(unsigned orderID, double amount)
 {
+	if (!this->isCorrectClient(orderID)) //user was not the one who made the order
+		return INVALID_ACTION * INVALID_ROLE_LOGIN;
+
 	//the order must already be finished in order to be paid for
 	if (!this->orders[orderID].isAccepted())
 	{
@@ -234,13 +256,11 @@ int TaxiService::pay(unsigned orderID, double amount)
 	return status;
 }
 
+//rates a driver
 int TaxiService::rate(unsigned orderID, int rating)
 {
-	//signed-in client did not make the order
-	if (this->orders[orderID].getClientID() != this->currentClientIndex)
-	{
+	if (!this->isCorrectClient(orderID)) //signed-in client did not make the order
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-	}
 
 	//the order is not marked as finished yet
 	if (!this->orders[orderID].isFinished())
@@ -252,11 +272,9 @@ int TaxiService::rate(unsigned orderID, int rating)
 	return SUCCESS;
 }
 
+//adds money to client account
 int TaxiService::addMoney(unsigned amount)
 {
-	if (this->currentClientIndex == INVALID_INDEX)
-		return INVALID_ACTION * INVALID_ROLE_LOGIN * FAIL_TO_CHANGE_MONEY_AMOUNT;
-
 	return this->clients[currentClientIndex].addMoney(amount);
 }
 
@@ -268,11 +286,12 @@ int TaxiService::changeAddress(const Address& newAddress)
 
 int TaxiService::acceptOrder(unsigned orderID, unsigned minutes)
 {
-	//cannot accept an already accepted order
-	if (this->orders[orderID].isAccepted())
+	//cannot accept an already accepted, finished or cancelled order
+	if (this->orders[orderID].isAccepted() || this->orders[orderID].isFinished() || this->orders[orderID].isCancelled())
 	{
 		return INVALID_ACTION;
 	}
+
 
 	this->orders[orderID].accept(this->currentDriverIndex);
 	this->orders[orderID].setMinutes(minutes);
@@ -281,8 +300,8 @@ int TaxiService::acceptOrder(unsigned orderID, unsigned minutes)
 
 int TaxiService::acceptPayment(unsigned orderID)
 {
-	//cannot accept payment for order they have not completed
-	if (this->orders[orderID].getDriverID() != currentDriverIndex)
+	//cannot accept payment for order they have not accepted or completed or which is cancelled	
+	if (!this->isCorrectDriver(orderID))
 		return INVALID_ACTION * INVALID_ROLE_LOGIN * FAIL_TO_CHANGE_MONEY_AMOUNT;
 
 	if (!this->orders[orderID].isAccepted())
@@ -290,6 +309,9 @@ int TaxiService::acceptPayment(unsigned orderID)
 
 	if (!this->orders[orderID].isFinished())
 		return INVALID_ACTION * ORDER_NOT_FINISHED;
+
+	if (this->orders[orderID].isCancelled())
+		return INVALID_ACTION * ORDER_CANCELLED;
 
 	int status = this->drivers[this->orders[orderID].getDriverID()].acceptPayment(this->orders[orderID].getCost());
 	if (status != SUCCESS)
@@ -304,12 +326,20 @@ int TaxiService::acceptPayment(unsigned orderID)
 int TaxiService::declineOrder(unsigned orderID)
 {
 	//cannot decline an order that has already been accepted
-	if (this->orders[orderID].isAccepted())
+	if (this->orders[orderID].isAccepted() || this->orders[orderID].isFinished())
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
+	//cannot decline a cancelled order
+	if (this->orders[orderID].isCancelled())
+		return INVALID_ACTION * ORDER_CANCELLED;
+
+	//driver has already declined the order
+	if (this->orders[orderID].getDeclinedBy().contains(currentDriverIndex))
+		return INVALID_ACTION;
+	
 	//decline order and remove it from driver's messages
-	this->orders[orderID].decline(this->currentDriverIndex);
-	this->drivers[this->currentDriverIndex].removeMessage(this->orders[orderID]);
+		this->orders[orderID].decline(this->currentDriverIndex);
+		this->drivers[this->currentDriverIndex].removeMessage(this->orders[orderID]);
 
 	//offering the order to the next closest driver who hasn't declined it yet
 	int nextDriver = this->findNearestDriver(this->orders[orderID], this->orders[orderID].getDeclinedBy());
@@ -325,20 +355,28 @@ int TaxiService::declineOrder(unsigned orderID)
 int TaxiService::finishOrder(unsigned orderID)
 {
 	//cannot finish an order they have not accepted
-	if (this->orders[orderID].getDriverID() != currentDriverIndex)
+	if (!this->isCorrectDriver(orderID))
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
+	//cannot finish a cancelled order
+	if (this->orders[orderID].isCancelled())
+		return INVALID_ACTION * ORDER_CANCELLED;
+
+	//cannot finish an already finished order
+	if (this->orders[orderID].isFinished())
+		return INVALID_ACTION;
+
+	//flag the order as finished, change the driver address and remove order from driver's messages
 	this->orders[orderID].finish();
 	this->drivers[currentDriverIndex].changeAddress(this->orders[orderID].getTo());
 	this->drivers[currentDriverIndex].removeMessage(this->orders[orderID]);
+
 	return SUCCESS;
 }
 
+
 double TaxiService::checkRating() const
 {
-	if (this->currentDriverIndex == INVALID_INDEX)
-		return INVALID_ACTION * INVALID_ROLE_LOGIN;
-
 	return this->drivers[currentDriverIndex].getAverageRating();
 }
 
@@ -362,7 +400,7 @@ std::ofstream& TaxiService::writeTaxiService(std::ofstream& output) const
 		this->drivers[i].writeUser(output);
 	}
 
-	//record the orders - first their size, then the orders themselves
+	//same process for the orders
 	int numberOfOrders = this->orders.getSize();
 	output.write((const char*)&numberOfOrders, sizeof(numberOfOrders));
 	for (int i = 0; i < numberOfOrders; i++)

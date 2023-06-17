@@ -78,16 +78,6 @@ void Address::describeAddress() const
 	std::cout << std::endl;
 }
 
-//bool Address::operator==(const Address& other) const
-//{
-//	return this->name == other.name && this->coordinates == other.coordinates && this->additionalInfo == other.additionalInfo;
-//}
-//
-//bool Address::operator!=(const Address& other) const
-//{
-//	return !(this->operator==(other));
-//}
-
 bool operator==(const Address& lhs, const Address& rhs)
 {
 	return lhs.getName() == rhs.getName() && lhs.getCoordinates() == rhs.getCoordinates() &&

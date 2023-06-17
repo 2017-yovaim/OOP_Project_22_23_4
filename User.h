@@ -34,8 +34,8 @@ public:
 	bool isCorrectPassword(const MyString& password) const; //checks if a password is correct for the user
 
 
-	virtual std::ofstream& writeUser(std::ofstream& output) const;
-	virtual std::ifstream& readUser(std::ifstream& input);
+	virtual std::ofstream& writeUser(std::ofstream& output) const; //writes user data into binary file
+	virtual std::ifstream& readUser(std::ifstream& input); //reads user data from binary file into an object of type user
 
 
 	virtual ~User() = default;

@@ -38,7 +38,7 @@ namespace
 	}
 }
 
-//writes a message depending on the outcome of the desired operation
+//prints a message on the console depending on the outcome of the desired operation
 void actionHandler(int errorCode)
 {
 	cout << endl;
@@ -107,6 +107,9 @@ void actionHandler(int errorCode)
 	if (errorCode % ORDER_NOT_FINISHED == 0)
 		cout << "This order has not been finished yet." << endl;
 
+	if (errorCode % ORDER_CANCELLED == 0)
+		cout << "The order has been cancelled." << endl;
+
 	if (errorCode % FAIL_TO_LOAD_DATA == 0)
 		cout << "Could not load taxi service data." << endl;
 
@@ -119,7 +122,7 @@ void actionHandler(int errorCode)
 	cout << endl;
 }
 
-
+//registers a client
 int registerClientMenu(TaxiService& ts)
 {
 	cin.ignore();
@@ -133,6 +136,7 @@ int registerClientMenu(TaxiService& ts)
 	return ts.registerClient(username, password, firstname, lastname);
 }
 
+//registers a driver
 int registerDriverMenu(TaxiService& ts)
 {
 	cin.ignore();
@@ -155,6 +159,7 @@ int registerDriverMenu(TaxiService& ts)
 	return ts.registerDriver(username, password, firstname, lastname, carnumber, phonenumber);
 }
 
+//logs a user in
 int loginMenu(TaxiService& ts)
 {
 	cin.ignore();
@@ -171,20 +176,23 @@ int loginMenu(TaxiService& ts)
 	return ts.login(username, password);
 }
 
+//logs a user out
 int logoutMenu(TaxiService& ts)
 {
 	return ts.logout();
 }
 
+//makes an order
 int makeOrderMenu(TaxiService& ts)
 {
-	//only clients can be orders
+	//only clients can makes orders
 	if (ts.getCurrentClientIndex() == INVALID_INDEX)
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
 	
 	cin.ignore();
 
+	//inital address
 	cout << "Please enter the name of the initial address: " << endl;
 	char buff[1024];
 	cin.getline(buff, 1024);
@@ -196,20 +204,6 @@ int makeOrderMenu(TaxiService& ts)
 	int fromy;
 	cin >> fromy;
 
-	while (fromx < MIN_LATITUDE || fromx > MAX_LATITUDE)
-	{
-		cout << "The first coordinate is not valid. It has to be between " << MIN_LATITUDE << " and " << MAX_LATITUDE << endl;
-		cout << "Please enter it again: " << endl;
-		cin >> fromx;
-	}
-
-	while (fromy < MIN_LONGITUDE || fromy > MAX_LONGITUDE)
-	{
-		cout << "The second coordinate is not valid. It has to be between " << MIN_LONGITUDE << " and " << MAX_LONGITUDE << endl;
-		cout << "Please enter it again: " << endl;
-		cin >> fromy;
-	}
-
 	cin.ignore();
 	cout << "Please enter any additional info of the initial address (if there isn't any, enter " << DEFAULT_EMPTY_ADD_INFO << ")" << endl;
 	cin.getline(buff, 1024);
@@ -217,6 +211,7 @@ int makeOrderMenu(TaxiService& ts)
 
 	Address from(fromName.c_str(), fromx, fromy, fromAddInfo.c_str());
 
+	//destination address
 	cout << "Please enter the name of the destionation address: " << endl;
 	cin.getline(buff, 1024);
 	MyString toName(buff);
@@ -227,20 +222,6 @@ int makeOrderMenu(TaxiService& ts)
 	int toy;
 	cin >> toy;
 
-	while (tox < MIN_LATITUDE || tox > MAX_LATITUDE)
-	{
-		cout << "The first coordinate is not valid. It has to be between " << MIN_LATITUDE << " and " << MAX_LATITUDE << endl;
-		cout << "Please enter it again: " << endl;
-		cin >> tox;
-	}
-
-	while (toy < MIN_LONGITUDE || toy > MAX_LONGITUDE)
-	{
-		cout << "The second coordinate is not valid. It has to be between " << MIN_LONGITUDE << " and " << MAX_LONGITUDE << endl;
-		cout << "Please enter it again: " << endl;
-		cin >> toy;
-	}
-
 	cin.ignore();
 	cout << "Please enter any additional info of the destination address (if there isn't any, enter " << DEFAULT_EMPTY_ADD_INFO << ")" << endl;
 	cin.getline(buff, 1024);
@@ -248,10 +229,12 @@ int makeOrderMenu(TaxiService& ts)
 
 	Address to(toName.c_str(), tox, toy, toAddInfo.c_str());
 
+	//the passengers
 	unsigned passengers;
 	cout << "Please enter the number of passengers." << endl;
 	cin >> passengers;
 
+	//if the order is successfully made, displays the order id. If not, returns an error code
 	unsigned idoforder = ts.order(from, to, passengers);
 	if (idoforder == FAIL_TO_COMPLETE_ORDER)
 		return FAIL_TO_COMPLETE_ORDER;
@@ -260,9 +243,10 @@ int makeOrderMenu(TaxiService& ts)
 	return SUCCESS;
 }
 
+//checks an order via order id
 int checkOrderMenu(TaxiService& ts)
 {
-	if (ts.getCurrentClientIndex() == INVALID_INDEX)
+	if (ts.getCurrentClientIndex() == INVALID_INDEX) //only clients can check orders
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
 	cout << "Please enter the order id." << endl;
@@ -274,9 +258,6 @@ int checkOrderMenu(TaxiService& ts)
 	{
 		if (ts.getOrders()[i].getOrderID() == orderid)
 		{
-			if (ts.getOrders()[i].getClientID() != ts.getCurrentClientIndex())
-				return INVALID_ACTION * INVALID_ROLE_LOGIN;
-
 			return ts.checkOrder(i);
 		}
 	}
@@ -284,9 +265,10 @@ int checkOrderMenu(TaxiService& ts)
 	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
+//cancells an order
 int cancelOrderMenu(TaxiService& ts)
 {
-	if (ts.getCurrentClientIndex() == INVALID_INDEX)
+	if (ts.getCurrentClientIndex() == INVALID_INDEX) //only clients can cancel orders
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	
 
@@ -299,9 +281,6 @@ int cancelOrderMenu(TaxiService& ts)
 	{
 		if (ts.getOrders()[i].getOrderID() == orderid)
 		{
-			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
-				return INVALID_ACTION * INVALID_ROLE_LOGIN;
-
 			return ts.cancelOrder(i);
 		}
 	}
@@ -309,9 +288,10 @@ int cancelOrderMenu(TaxiService& ts)
 	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
+//pays for an order
 int makePaymentMenu(TaxiService& ts)
 {
-	if (ts.getCurrentClientIndex() == INVALID_INDEX)
+	if (ts.getCurrentClientIndex() == INVALID_INDEX) //only clients can pay for orders
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	
 
@@ -328,9 +308,6 @@ int makePaymentMenu(TaxiService& ts)
 	{
 		if (ts.getOrders()[i].getOrderID() == orderid)
 		{
-			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
-				return INVALID_ACTION * INVALID_ROLE_LOGIN;
-
 			return ts.pay(i, amount);
 		}
 	}
@@ -338,9 +315,10 @@ int makePaymentMenu(TaxiService& ts)
 	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
+//rates a driver
 int rateMenu(TaxiService& ts)
 {
-	if (ts.getCurrentClientIndex() == INVALID_INDEX)
+	if (ts.getCurrentClientIndex() == INVALID_INDEX) //only clients can leave ratings
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
 	cout << "Please enter the order id: " << endl;
@@ -362,9 +340,6 @@ int rateMenu(TaxiService& ts)
 	{
 		if (ts.getOrders()[i].getOrderID() == orderid)
 		{
-			if (ts.getCurrentClientIndex() != ts.getOrders()[i].getClientID())
-				return INVALID_ACTION * INVALID_ROLE_LOGIN;
-
 			return ts.rate(i, rating);
 		}
 	}
@@ -372,9 +347,10 @@ int rateMenu(TaxiService& ts)
 	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
+//adds money to client account
 int addMoneyMenu(TaxiService& ts)
 {
-	if (ts.getCurrentClientIndex() == INVALID_INDEX)
+	if (ts.getCurrentClientIndex() == INVALID_INDEX) //only clients can add money to their accounts
 		return INVALID_ACTION * INVALID_ROLE_LOGIN * FAIL_TO_CHANGE_MONEY_AMOUNT;
 
 	cout << "Please enter the amount you wish to add to your account: " << endl;
@@ -391,10 +367,11 @@ int addMoneyMenu(TaxiService& ts)
 
 }
 
+//changes a driver's address
 int changeAddressMenu(TaxiService& ts)
 {
 
-	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX) //only drivers can change their address (and have a recorded address)
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
 	cin.ignore();
@@ -407,27 +384,14 @@ int changeAddressMenu(TaxiService& ts)
 	cin >> x;
 	cin >> y;
 
-	while (x < MIN_LATITUDE || x > MAX_LATITUDE)
-	{
-		cout << "This is not a valid first coordinate. It has to be between " << MIN_LATITUDE << " and " << MAX_LATITUDE << endl;
-		cout << "Please enter it again: " << endl;
-		cin >> x;
-	}
-
-	while (y < MIN_LONGITUDE || y > MAX_LONGITUDE)
-	{
-		cout << "This is not a valid second coordinate. It has to be between " << MIN_LONGITUDE << " and " << MAX_LONGITUDE << endl;
-		cout << "Please enter it again: " << endl;
-		cin >> y;
-	}
-
 	Address newAddress(buff, x, y);
 	return ts.changeAddress(newAddress);
 }
 
+//checks a driver's messages
 int checkMessagesMenu(TaxiService& ts)
 {
-	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX) //only drivers have messages and can check them
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	
 
@@ -435,9 +399,10 @@ int checkMessagesMenu(TaxiService& ts)
 	return SUCCESS;
 }
 
+//accepts an order
 int acceptOrderMenu(TaxiService& ts)
 {
-	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX) //only drivers can accept orders
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
 	
@@ -448,6 +413,7 @@ int acceptOrderMenu(TaxiService& ts)
 	cout << "Please enter how long it will take you to arrive: " << endl;
 	unsigned int minutes = 0;
 	cin >> minutes;
+
 	size_t orderCount = ts.getOrders().getSize();
 	for (size_t i = 0; i < orderCount; i++)
 	{
@@ -461,9 +427,10 @@ int acceptOrderMenu(TaxiService& ts)
 
 }
 
+//declines an order
 int declineOrderMenu(TaxiService& ts)
 {
-	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX) //only drivers can decline orders
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	
 
@@ -483,9 +450,10 @@ int declineOrderMenu(TaxiService& ts)
 	return INVALID_DATA * ORDER_NOT_FOUND;
 }
 
+//finishes an order
 int finishOrderMenu(TaxiService& ts)
 {
-	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX) //only drivers can flag orders as finished
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 	
 
@@ -507,7 +475,7 @@ int finishOrderMenu(TaxiService& ts)
 
 int acceptPaymentMenu(TaxiService& ts)
 {
-	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX) //only drivers can accept payments
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
 	cout << "Please enter the order id." << endl;
@@ -528,13 +496,14 @@ int acceptPaymentMenu(TaxiService& ts)
 
 int checkRatingMenu(const TaxiService& ts)
 {
-	if (ts.getCurrentDriverIndex() == INVALID_INDEX)
+	if (ts.getCurrentDriverIndex() == INVALID_INDEX) //only drivers can check their ratings (and have ratings recorded)
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
 	cout << "Your current rating is " << ts.checkRating() << endl;
 	return SUCCESS;
 }
 
+//saves the data from the current session into a binary file
 int saveTaxiServiceMenu(TaxiService& ts, char* outputFilePath)
 {
 	cin.ignore();
@@ -552,6 +521,7 @@ int saveTaxiServiceMenu(TaxiService& ts, char* outputFilePath)
 	return SUCCESS;
 }
 
+//loads data from a binary file into the current taxi service system
 int loadTaxiServiceMenu(TaxiService& ts, char* inputFilePath, char* outputFilePath)
 {
 	cout << "Would you like to save your current taxi service data before you load the new one?" << endl;
@@ -581,7 +551,7 @@ int loadTaxiServiceMenu(TaxiService& ts, char* inputFilePath, char* outputFilePa
 	return SUCCESS;
 }
 
-
+//main menu - allows users to choose actions
 int menu(TaxiService& ts)
 {
 	cout << "Welcome to the taxi service!" << endl;
@@ -704,7 +674,11 @@ int main()
 	try
 	{
 		TaxiService ts;
-		return menu(ts);
+		cout << menu(ts) << endl;
+		
+		unsigned tsOrdersSize = ts.getOrders().getSize();
+		for (unsigned i = 0; i < tsOrdersSize; i++)
+			ts.getOrders()[i].describeOrder();
 	}
 	catch (const std::invalid_argument& iae)
 	{

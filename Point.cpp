@@ -4,19 +4,12 @@
 
 void Point::setX(int x)
 {
-	if (x < MIN_LATITUDE)
-		throw std::invalid_argument("Latitude is smaller than smallest possible");
-	if (x > MAX_LATITUDE)
-		throw std::invalid_argument("Latitude is bigger than biggest possible");
+
 	this->x = x;
 }
 
 void Point::setY(int y)
 {
-	if (y < MIN_LONGITUDE)
-		throw std::invalid_argument("Longitude is smaller than smallest possible");
-	if (y > MAX_LONGITUDE)
-		throw std::invalid_argument("Longitude is bigger than biggest possible");
 	this->y = y;
 }
 
@@ -67,16 +60,6 @@ std::ifstream& Point::readPoint(std::ifstream& input)
 	this->setY(y);
 	return input;
 }
-
-//bool Point::operator==(const Point& other) const
-//{
-//	return this->x == other.x && this->y == other.y;
-//}
-//
-//bool Point::operator!=(const Point& other) const
-//{
-//	return !(this->operator==(other));
-//}
 
 bool operator==(const Point& lhs, const Point& rhs)
 {

@@ -28,6 +28,7 @@ const MyString& Driver::getPhoneNumber() const
 {
 	return this->phoneNumber;
 }
+
 const Address& Driver::getCurrentAddress() const
 {
 	return this->currentAddress;
@@ -41,7 +42,7 @@ int Driver::changeAddress(const Address& newAddress)
 
 double Driver::acceptPayment(double amount)
 {
-	if (amount <= 0)
+	if (amount <= 0) //not a valid money amount
 	{
 		return FAIL_TO_CHANGE_MONEY_AMOUNT;
 	}
@@ -50,6 +51,7 @@ double Driver::acceptPayment(double amount)
 	return SUCCESS;
 }
 
+//what the user interface displays
 void Driver::describeDriver() const
 {
 	std::cout << "Driver: " << this->getFirstName().c_str() << " " << this->getLastName().c_str() << std::endl;
@@ -73,12 +75,14 @@ void Driver::checkMessages() const
 	}
 }
 
+//the system sends a message to the driver
 int Driver::pushOrder(Order& order)
 {
 	this->messages.push_back(order);
 	return SUCCESS;
 }
 
+//the system removes a message of the driver
 int Driver::removeMessage(Order& order)
 {
 	unsigned indexToDelete = this->messages.getIndex(order);
@@ -121,18 +125,6 @@ std::ifstream& Driver::readUser(std::ifstream& input)
 
 	return input;
 }
-
-//bool Driver::operator==(const Driver& other) const
-//{
-//	return this->getUserName() == other.getUserName() && this->getFirstName() == other.getFirstName()
-//		&& this->getCarNumber() == other.getCarNumber() && this->getPhoneNumber() == other.getPhoneNumber()
-//		&& this->getCurrentAddress() == other.getCurrentAddress();
-//}
-//
-//bool Driver::operator!=(const Driver& other) const
-//{
-//	return !(this->operator==(other));
-//}
 
 bool operator==(const Driver& lhs, const Driver& rhs)
 {

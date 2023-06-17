@@ -1,6 +1,7 @@
 #pragma once
 #include "MyString.h"
 #include "Point.h"
+#include "GlobalConstants.h"
 #include <fstream>
 
 
@@ -26,18 +27,14 @@ public:
 	int getY() const;
 	const MyString& getAdditionalInfo() const;
 
-	friend double getAddressesDistance(const Address& lhs, const Address& rhs);
-
 	std::ofstream& writeAddress(std::ofstream& output) const; //writes address into binary file
 	std::ifstream& readAddress(std::ifstream& input); //reads address from binary file
 
 	void describeAddress() const;
 
-	//bool operator==(const Address& other) const;
-	//bool operator!=(const Address& other) const;
-
 };
 
+double getAddressesDistance(const Address& lhs, const Address& rhs);
 bool operator==(const Address& lhs, const Address& rhs);
 bool operator!=(const Address& lhs, const Address& rhs);
 

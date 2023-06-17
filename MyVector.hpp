@@ -1,4 +1,4 @@
-//note - also used in my third homework
+//also used in my third homework
 
 #pragma once
 #include <iostream>

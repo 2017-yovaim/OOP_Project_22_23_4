@@ -1,10 +1,6 @@
 #pragma once
 
-//limits
-const int MAX_LATITUDE = 90; //degrees at North pole
-const int MIN_LATITUDE = -90; //degrees at South pole
-const int MAX_LONGITUDE = 180; //180th meridian
-const int MIN_LONGITUDE = 0; //Greenwich meridian
+//defaults
 const unsigned DEFAULT_VECTOR_CAPACITY = 8;
 const char DEFAULT_FILE_PATH[] = "data.dat";
 const char DEFAULT_EMPTY_ADD_INFO[] = "\"\"";
@@ -33,7 +29,8 @@ const int FAIL_TO_SAVE_DATA = 61;
 const int FAIL_TO_OPEN_FILE = 67; 
 const int ORDER_NOT_ACCEPTED = 71;
 const int ORDER_NOT_FINISHED = 73;
-const int FAIL_TO_START_SYSTEM = 79;
+const int ORDER_CANCELLED = 79;
+const int FAIL_TO_START_SYSTEM = 83;
 
 
 //commands

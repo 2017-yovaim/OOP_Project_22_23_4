@@ -207,7 +207,11 @@ void Order::describeOrder() const
 	cout << "To ";
 	this->getTo().describeAddress();
 	cout << "Status:";
-	if (isFinished())
+	if (isCancelled())
+	{
+		cout << " cancelled." << endl;
+	}
+	else if (isFinished())
 	{
 		cout << " finished." << endl;
 	}
@@ -219,7 +223,6 @@ void Order::describeOrder() const
 	{
 		cout << " not accepted yet." << endl;
 	}
-	
 }
 
 

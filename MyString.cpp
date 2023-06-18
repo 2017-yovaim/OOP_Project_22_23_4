@@ -193,7 +193,7 @@ std::ifstream& MyString::readString(std::ifstream & input)
 	tempData[len] = '\0';
 	MyString temp(tempData);
 	delete[] tempData;
-	(*this) = temp;
+	(*this) = std::move(temp);
 
 	return input;
 }

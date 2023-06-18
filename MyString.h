@@ -39,8 +39,8 @@ public:
 	friend MyString operator+(const MyString& lhs, const MyString& rhs);
 	friend std::istream& operator>>(std::istream&, MyString& str);
 
-	std::ofstream& writeString(std::ofstream& output) const;
-	std::ifstream& readString(std::ifstream& input);
+	std::ofstream& writeString(std::ofstream& output) const; //writes string into binary file
+	std::ifstream& readString(std::ifstream& input); //reads a string from binary file
 };
 
 std::ostream& operator<<(std::ostream& os, const MyString& str);

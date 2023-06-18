@@ -675,10 +675,6 @@ int main()
 	{
 		TaxiService ts;
 		cout << menu(ts) << endl;
-		
-		unsigned tsOrdersSize = ts.getOrders().getSize();
-		for (unsigned i = 0; i < tsOrdersSize; i++)
-			ts.getOrders()[i].describeOrder();
 	}
 	catch (const std::invalid_argument& iae)
 	{

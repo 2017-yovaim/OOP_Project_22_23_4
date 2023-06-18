@@ -10,7 +10,8 @@ using std::cin;
 		double minDistance = (double)INT_MAX;
 		int nearestDriverIndex = INVALID_INDEX;
 
-		for (unsigned i = 0; i < this->drivers.getSize(); i++)
+		unsigned driversSize = this->drivers.getSize();
+		for (unsigned i = 0; i < driversSize; i++)
 		{
 			if (excludedDrivers.contains(i))
 				continue; //one of the drivers who already refused the order
@@ -200,7 +201,7 @@ int TaxiService::checkOrder(unsigned orderID) const
 		return INVALID_ACTION * INVALID_ROLE_LOGIN;
 
 	this->orders[orderID].describeOrder();
-	if (this->orders[orderID].isAccepted())
+	if (this->orders[orderID].isAccepted() && !this->orders[orderID].isCancelled())
 	{
 		this->drivers[this->orders[orderID].getDriverID()].describeDriver();
 	}

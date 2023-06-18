@@ -108,20 +108,38 @@ void Driver::addRating(double rating)
 
 std::ofstream& Driver::writeUser(std::ofstream& output) const
 {
+	//write driver data
 	User::writeUser(output);
 	this->carNumber.writeString(output);
 	this->phoneNumber.writeString(output);
 	this->currentAddress.writeAddress(output);
+
+	//write ratings data
+	double tempRatingsSum = this->sumOfAllRatings;
+	double tempRatingsNumber = this->numberOfRatings;
+	output.write((const char*)&tempRatingsSum, sizeof(tempRatingsSum));
+	output.write((const char*)&tempRatingsNumber, sizeof(tempRatingsNumber));
 
 	return output;
 }
 
 std::ifstream& Driver::readUser(std::ifstream& input)
 {
+	//read driver data
 	User::readUser(input);
 	this->carNumber.readString(input);
 	this->phoneNumber.readString(input);
 	this->currentAddress.readAddress(input);
+	
+	//read ratings data
+	double tempRatingsSum = 0;
+	double tempRatingsNumber = 0;
+
+	input.read((char*)&tempRatingsSum, sizeof(tempRatingsSum));
+	input.read((char*)&tempRatingsNumber, sizeof(tempRatingsNumber));
+
+	this->sumOfAllRatings = tempRatingsSum;
+	this->numberOfRatings = tempRatingsNumber;
 
 	return input;
 }
